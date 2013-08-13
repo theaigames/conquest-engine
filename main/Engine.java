@@ -181,6 +181,10 @@ public class Engine {
 			{
 				if(armies < 1)
 					atm.setIllegalMove("Attack/Transfer " + atm.getPlayerName() + ": Cannot attack/transfer with less than 1 army (region " + atm.getFromRegion().getId() + ").");
+				
+				if(fromRegion.getArmies() - 1 < atm.getArmies()) //make sure that there are not more armies used to attack/transfer than there are on the region at the start of the round
+					atm.setArmies(fromRegion.getArmies() - 1);
+				
 			}
 			else
 				atm.setIllegalMove("Attack/Transfer " + atm.getPlayerName() + ": Region " + atm.getToRegion().getId() + " is not a neighbor of region " + atm.getFromRegion().getId() + ".");
