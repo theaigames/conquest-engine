@@ -47,7 +47,7 @@ public class PlaceArmiesMove extends Move {
 		if(getIllegalMove().equals(""))
 			return getPlayerName() + " place_armies " + region.getId() + " " + armies;
 		else
-			return getPlayerName() + " place_armies illegal_move " + getIllegalMove();
+			return getPlayerName() + " illegal_move " + getIllegalMove();
 				
 	}
 	

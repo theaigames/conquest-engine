@@ -57,7 +57,7 @@ public class AttackTransferMove extends Move {
 		if(getIllegalMove().equals(""))
 			return getPlayerName() + " attack_transfer " + fromRegion.getId() + " " + toRegion.getId() + " " + armies;
 		else
-			return getPlayerName() + " attack_transfer illegal_move " + getIllegalMove();
+			return getPlayerName() + " illegal_move " + getIllegalMove();
 	}
 
 }

@@ -141,7 +141,6 @@ public class BotState {
 		for(Region region : visibleMap.regions)
 			if(region.getPlayerName().equals("unknown"))
 				unknownRegions.add(region);
-		
 		for(Region unknownRegion : unknownRegions)
 			visibleMap.getRegions().remove(unknownRegion);				
 	}

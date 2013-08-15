@@ -107,7 +107,7 @@ public class Parser {
 		return region;
 	}
 	
-	public ArrayList<Region> parsePreferredStartingRegions(String input)
+	public ArrayList<Region> parsePreferredStartingRegions(String input, ArrayList<Region> pickableRegions)
 	{
 		ArrayList<Region> preferredStartingRegions = new ArrayList<Region>();
 		int nrOfPreferredStartingRegions = 6;
@@ -118,13 +118,25 @@ public class Parser {
 			try {
 				Region r = parseRegion(split[i]);
 				
-				if(!preferredStartingRegions.contains(r))
-					preferredStartingRegions.add(r);
+				if(pickableRegions.contains(r))
+				{
+					if(!preferredStartingRegions.contains(r))
+						preferredStartingRegions.add(r);
+					else
+					{
+						System.out.println("Error on preferred starting regions: Same region appears more than once");
+						return null;
+					}
+				}
 				else
-					System.out.println("Error on preferred starting regions: Same region appears more than once");
+				{
+					System.out.println("Chosen region is not in the given pickable regions list");
+					return null;
+				}
 			}
 			catch(Exception e) { //player has not returned enough preferred regions
 				System.out.println("Error on preferred starting regions: Player did not return enough preferred starting regions");
+				return null;
 			}
 		}
 		

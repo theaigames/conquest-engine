@@ -64,6 +64,7 @@ public class Engine {
 		int nrOfStartingRegions = 3;
 		int regionsAdded = 0;
 		
+		//pick semi random regions to start with
 		for(SuperRegion superRegion : map.getSuperRegions())
 		{
 			int nrOfRegions = superRegion.getSubRegions().size();
@@ -82,11 +83,18 @@ public class Engine {
 		}
 		
 		//get the preferred starting regions from the players
-		ArrayList<Region> p1Regions = parser.parsePreferredStartingRegions(player1.getBot().getPreferredStartingArmies(2000, pickableRegions));
-		ArrayList<Region> p2Regions = parser.parsePreferredStartingRegions(player2.getBot().getPreferredStartingArmies(2000, pickableRegions));
+		ArrayList<Region> p1Regions = parser.parsePreferredStartingRegions(player1.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions);
+		ArrayList<Region> p2Regions = parser.parsePreferredStartingRegions(player2.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions);
 		ArrayList<Region> givenP1Regions = new ArrayList<Region>();
 		ArrayList<Region> givenP2Regions = new ArrayList<Region>();
 		
+		//if the bot did not correctly return his starting regions, get some random ones
+		if(p1Regions == null)
+			p1Regions = getRandomStartingRegions(pickableRegions);
+		if(p2Regions == null)
+			p2Regions = getRandomStartingRegions(pickableRegions);
+		
+		//distribute the starting regions
 		int i1, i2, n;
 		i1 = 0; i2 = 0;
 		n = 0;
@@ -122,6 +130,19 @@ public class Engine {
 		player2PlayedGame.add(new MoveResult(null, map.getVisibleMapCopyForPlayer(player2)));
 	}
 	
+	private ArrayList<Region> getRandomStartingRegions(ArrayList<Region> pickableRegions)
+	{
+		ArrayList<Region> startingRegions = new ArrayList<Region>();
+		for(int i=0; i<6; i++)
+		{
+			double rand = Math.random();
+			int randomIndex = (int) rand * pickableRegions.size();
+			Region randomRegion = pickableRegions.get(randomIndex);
+			startingRegions.add(randomRegion);
+		}
+		return startingRegions;
+	}
+	
 	private void getMoves(String movesInput)
 	{
 		ArrayList<Move> moves = parser.parseMoves(movesInput);
@@ -155,12 +176,12 @@ public class Engine {
 			if(armies > player.getArmiesLeft()) //player wants to place more armies than he has left
 				plm.setArmies(player.getArmiesLeft()); //place all armies he has left
 			if(player.getArmiesLeft() <= 0)
-				plm.setIllegalMove("Place armies " + plm.getPlayerName() + ": No more armies left to place.");
+				plm.setIllegalMove(" place-armies " + "no armies left to place");
 			
 			player.setArmiesLeft(player.getArmiesLeft() - plm.getArmies());
 		}
 		else
-			plm.setIllegalMove("Place armies " + plm.getPlayerName() + ": Region " + plm.getRegion().getId() + " not owned by player.");
+			plm.setIllegalMove(plm.getRegion().getId() + " place-armies " + "doesn't own ");
 
 		moveQueue.addMove(plm);
 	}
@@ -180,17 +201,13 @@ public class Engine {
 			if(fromRegion.isNeighbor(toRegion))
 			{
 				if(armies < 1)
-					atm.setIllegalMove("Attack/Transfer " + atm.getPlayerName() + ": Cannot attack/transfer with less than 1 army (region " + atm.getFromRegion().getId() + ").");
-				
-				if(fromRegion.getArmies() - 1 < atm.getArmies()) //make sure that there are not more armies used to attack/transfer than there are on the region at the start of the round
-					atm.setArmies(fromRegion.getArmies() - 1);
-				
+					atm.setIllegalMove(atm.getFromRegion().getId() + " attack/transfer " + "has less than 1 army");
 			}
 			else
-				atm.setIllegalMove("Attack/Transfer " + atm.getPlayerName() + ": Region " + atm.getToRegion().getId() + " is not a neighbor of region " + atm.getFromRegion().getId() + ".");
+				atm.setIllegalMove(atm.getToRegion().getId() + " attack/transfer " + "not a neighbor");
 		}
 		else
-			atm.setIllegalMove("Attack/Transfer " + atm.getPlayerName() + ": Region " + atm.getFromRegion().getId() + " not owned by player.");
+			atm.setIllegalMove(atm.getFromRegion().getId() + " attack/transfer " + "not owned");
 
 		moveQueue.addMove(atm);
 	}
@@ -240,13 +257,13 @@ public class Engine {
 							toRegion.setArmies(toRegion.getArmies() + move.getArmies());
 						}
 						else
-							move.setIllegalMove("Transfer " + move.getPlayerName() + ": Cannot transfer with only 1 army on region " + move.getFromRegion().getId() + ".");
+							move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only 1 army on ");
 					}
 					else //attack
 						doAttack(move);
 				}
 				else
-					move.setIllegalMove("Attack/Transfer " + move.getPlayerName() + ": Cannot attack/transfer, Region " + move.getFromRegion().getId() + " was taken by other player this round.");
+					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
 			}
 			visibleRegionsPlayer1Map = map.visibleRegionsForPlayer(player1);
 			visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
@@ -317,7 +334,7 @@ public class Engine {
 			}
 		}
 		else
-			move.setIllegalMove("Attack " + move.getPlayerName() + ": Cannot attack with only 1 army on region " + move.getFromRegion().getId() + ".");
+			move.setIllegalMove(move.getFromRegion().getId() + " attack " + "only 1 army on ");
 	}
 	
 	public Player winningPlayer()

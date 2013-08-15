@@ -225,6 +225,9 @@ public class BotStarterJim implements Bot
 			}
 		}
 		
+		/**
+		 * klopt niet, de transfers mogen deze ronde niet meer gebruikt worden voor attack/transfer
+		 */
 		//set the transfers to the map for the attacks
 		for(AttackTransferMove transfer : attackTransferMoves)
 		{
