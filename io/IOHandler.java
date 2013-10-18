@@ -10,6 +10,7 @@ public class IOHandler {
 	
 	public IOHandler(String command) throws IOException
 	{
+		System.out.println(command);
 		child = Runtime.getRuntime().exec(command);
 		in = new OutStream(child.getOutputStream());
 		out = new InStream(child.getInputStream());

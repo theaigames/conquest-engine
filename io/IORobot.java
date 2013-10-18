@@ -39,7 +39,8 @@ public class IORobot implements Robot
 		handler.writeLine(output);
 		System.out.println(output);
 		String line = handler.readLine(timeOut);
-		
+		System.out.println("read: " + line);
+		System.out.println("err: " + handler.getStderr());
 		return line;
 	}
 	
@@ -52,13 +53,13 @@ public class IORobot implements Robot
 	@Override
 	public String getAttackTransferMoves(long timeOut)
 	{
-		return getMoves("attack_transfer", timeOut);
+		return getMoves("attack/transfer", timeOut);
 	}
 	
 	private String getMoves(String moveType, long timeOut)
 	{
 		handler.writeLine("go " + moveType + " " + timeOut);
-		//System.out.println("go " + moveType + " " + timeOut);
+		System.out.println("go " + moveType + " " + timeOut);
 		
 		String line = "";
 		long timeStart = System.currentTimeMillis();
@@ -70,10 +71,10 @@ public class IORobot implements Robot
 			if(timeElapsed >= timeOut)
 				break;
 		}
-		if(line.equals("No moves"))
+		if(line.equals("No moves")) //moet algemener
 			return "";
 
-		//System.out.println("read: " + line);
+		System.out.println("read: " + line);
 		return line;
 	}
 	

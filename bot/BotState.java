@@ -44,9 +44,8 @@ public class BotState {
 	{
 		int i, regionId, superRegionId, reward;
 		
-		switch(mapInput[1])
+		if(mapInput[1].equals("super_regions"))
 		{
-		case "super_regions":
 			for(i=2; i<mapInput.length; i++)
 			{
 				try {
@@ -59,9 +58,9 @@ public class BotState {
 					System.err.println("Unable to parse SuperRegions");
 				}
 			}
-			break;
-			
-		case "regions":	
+		}
+		else if(mapInput[1].equals("regions"))
+		{
 			for(i=2; i<mapInput.length; i++)
 			{
 				try {
@@ -75,9 +74,9 @@ public class BotState {
 					System.err.println("Unable to parse Regions " + e.getMessage());
 				}
 			}
-			break;
-		
-		case "neighbors":
+		}
+		else if(mapInput[1].equals("neighbors"))
+		{
 			for(i=2; i<mapInput.length; i++)
 			{
 				try {
@@ -94,8 +93,6 @@ public class BotState {
 					System.err.println("Unable to parse Neighbors " + e.getMessage());
 				}
 			}
-			break;
-			
 		}
 	}
 	

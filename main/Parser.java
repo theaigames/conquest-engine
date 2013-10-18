@@ -57,39 +57,38 @@ public class Parser {
 		else
 			System.out.println("Wrong input on move: player does not exist");
 		
-		switch(split[1])
+		if(split[1].equals("place_armies"))		
 		{
-			case "place_armies":
-			{
-				Region region = null;
+			Region region = null;
 
-				region = parseRegion(split[2]);
+			region = parseRegion(split[2]);
 
-				try { armies = Integer.parseInt(split[3]); }
-				catch(Exception e) { System.out.println("Number of armies input incorrect.");}
+			try { armies = Integer.parseInt(split[3]); }
+			catch(Exception e) { System.out.println("Number of armies input incorrect.");}
+		
+			if(!(player == null || region == null || armies == -1))
+				return new PlaceArmiesMove(player.getName(), region, armies);
+			return null;
+		}
+		else if(split[1].equals("attack/transfer"))
+		{
+			Region fromRegion = null;
+			Region toRegion = null;
 			
-				if(!(player == null || region == null || armies == -1))
-					return new PlaceArmiesMove(player.getName(), region, armies);
-			}
-			case "attack_transfer":
-			{
-				Region fromRegion = null;
-				Region toRegion = null;
-				
-				fromRegion = parseRegion(split[2]);
-				toRegion = parseRegion(split[3]);
-				
-				try { armies = Integer.parseInt(split[4]); }
-				catch(Exception e) { System.out.println("Number of armies input incorrect.");}
+			fromRegion = parseRegion(split[2]);
+			toRegion = parseRegion(split[3]);
+			
+			try { armies = Integer.parseInt(split[4]); }
+			catch(Exception e) { System.out.println("Number of armies input incorrect.");}
 
-				if(!(player == null || fromRegion == null || toRegion == null || armies == -1))
-					return new AttackTransferMove(player.getName(), fromRegion, toRegion, armies);
-			}
-			default:
-			{
-				System.out.println("Movetype incorrect.");
-				return null;
-			}
+			if(!(player == null || fromRegion == null || toRegion == null || armies == -1))
+				return new AttackTransferMove(player.getName(), fromRegion, toRegion, armies);
+			return null;
+		}
+		else
+		{
+			System.out.println("Movetype incorrect.");
+			return null;
 		}
 	}
 	

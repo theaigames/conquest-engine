@@ -48,7 +48,7 @@ public class BotParser {
 					for(PlaceArmiesMove move : placeArmiesMoves)
 						output = output.concat(move.getString() + ",");
 				} 
-				else if(parts[1].equals("attack_transfer")) 
+				else if(parts[1].equals("attack/transfer")) 
 				{
 					//attack/transfer
 					ArrayList<AttackTransferMove> attackTransferMoves = bot.getAttackTransferMoves(currentState, Long.valueOf(parts[2]));

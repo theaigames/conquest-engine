@@ -181,14 +181,14 @@ public class Engine {
 			player.setArmiesLeft(player.getArmiesLeft() - plm.getArmies());
 		}
 		else
-			plm.setIllegalMove(plm.getRegion().getId() + " place-armies " + "doesn't own ");
+			plm.setIllegalMove(plm.getRegion().getId() + " place_armies " + "doesn't own ");
 
 		moveQueue.addMove(plm);
 	}
 	
 	private void queueAttackTransfer(AttackTransferMove atm)
 	{
-		if(atm == null){ System.out.println("Error on attack_transfer input."); return; }
+		if(atm == null){ System.out.println("Error on attack/transfer input."); return; }
 		
 		Region fromRegion = atm.getFromRegion();
 		Region toRegion = atm.getToRegion();

@@ -43,7 +43,7 @@ public class Region {
 	}
 	
 	/**
-	 * @param region A Region object
+	 * @param region a Region object
 	 * @return True if this Region is a neighbor of given Region, false otherwise
 	 */
 	public boolean isNeighbor(Region region)

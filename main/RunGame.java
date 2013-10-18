@@ -21,7 +21,7 @@ public class RunGame
 	LinkedList<MoveResult> player2PlayedGame;
 	int gameIndex = 1;
 	
-	RunGame() throws IOException
+	RunGame(String bot1Dir, String bot2Dir) throws IOException
 	{
 		System.out.println("starting");
 		
@@ -32,9 +32,12 @@ public class RunGame
 		String playerName1, playerName2;
 		int startingArmies;
 		
-		//setup the bots		
-		bot1 = new IORobot("java bot.BotStarterJim");
-		bot2 = new IORobot("java bot.BotStarterJim");
+		//setup the bots
+		//bot1 = new IORobot("java bot.BotStarterJim");		
+		//bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer0 /home/jim/development/the-ai-games-website/bots_temp/test2/");
+		//bot2 = new IORobot("java bot.BotStarterJim");
+		bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer1 " + bot1Dir);
+		bot2 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer2 " + bot2Dir);
 		playerName1 = "player1";
 		playerName2 = "player2";
 		startingArmies = 5;
@@ -73,10 +76,14 @@ public class RunGame
 	}
 	
 	public static void main(String args[]) throws IOException
-	{
+	{	
+		final String bot1Dir, bot2Dir;
+		bot1Dir = args[0];
+		bot2Dir = args[1];
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				try { new RunGame(); } 
+				try { new RunGame(bot1Dir, bot2Dir); } 
 				catch (IOException e) {}
 			}
 		});
@@ -332,7 +339,7 @@ public class RunGame
 	{
 		try {
 			//temp
-			String fileString = "C:\\Users\\Jim\\Documents\\Visual Studio 2012\\Projects\\TestJavaScript\\TestJavaScript\\games\\out.txt";
+			String fileString = "/home/jim/development/the-ai-games-website/public/uploads/games/out.txt";
 			FileWriter fileStream = new FileWriter(fileString);
 			BufferedWriter out = new BufferedWriter(fileStream);
 			
