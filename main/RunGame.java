@@ -99,13 +99,17 @@ public class RunGame
 	
 	public static void main(String args[]) throws IOException
 	{	
-		final String bot1Dir, bot2Dir;
-		bot1Dir = args[0];
-		bot2Dir = args[1];
+		final String bot1Dir, bot2Dir, bot1Id, bot2Id, gameId;
+		gameId = args[0];
+		bot1Id = args[1];
+		bot2Id = args[2];
+		bot1Dir = args[3];
+		bot2Dir = args[4];
+
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				try { new RunGame(bot1Dir, bot2Dir); } 
+				try { new RunGame(gameId, bot1Id, bot2Id, bot1Dir, bot2Dir); } 
 				catch (IOException e) {}
 			}
 		});
@@ -426,13 +430,13 @@ public class RunGame
 	 */
 
 	// which dump is being used? this one or the one in the python iowrapper??
-	public function saveDump() {
+	public void saveDump() {
 		// DBCollection coll = db.getCollection("games");
 
 		// coll.insert(doc)
 	}
 
-	public function saveScore(String game_id, String winnerName, int score) {
+	public void saveScore(String game_id, String winnerName, int score) {
 		DBCollection coll = db.getCollection("games");
 
 		BasicDBObject queryDoc = new BasicDBObject()
@@ -440,7 +444,7 @@ public class RunGame
 
 		BasicDBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
-				.append("winner", winner == playerName1 ? bot1Id : bot2Id)
+				.append("winner", winnerName == playerName1 ? bot1Id : bot2Id)
 				.append("score", score)
 			);
 
