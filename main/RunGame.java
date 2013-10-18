@@ -14,15 +14,15 @@ import move.AttackTransferMove;
 import move.MoveResult;
 import move.PlaceArmiesMove;
 
-import com.monbodb.MongoClient;
-import com.monbodb.MongoException;
-import com.monbodb.WriteConcern;
-import com.monbodb.DB;
-import com.monbodb.DBCollection;
-import com.monbodb.BasicDBObject;
-import com.monbodb.DBObject;
-import com.monbodb.DBCursor;
-import com.monbodb.ServerAddress;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import com.mongodb.WriteConcern;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.ServerAddress;
 
 public class RunGame
 {
@@ -46,7 +46,7 @@ public class RunGame
 		IORobot bot1, bot2;
 		int startingArmies;
 
-		db = new MongoClient('localhost', 27017).getDB('test');
+		db = new MongoClient("localhost", 27017).getDB("test");
 
 		// authentication
 		// boolean auth = db.authenticate(<username>,<password>);
