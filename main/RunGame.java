@@ -14,14 +14,29 @@ import move.AttackTransferMove;
 import move.MoveResult;
 import move.PlaceArmiesMove;
 
+import com.monbodb.MongoClient;
+import com.monbodb.MongoException;
+import com.monbodb.WriteConcern;
+import com.monbodb.DB;
+import com.monbodb.DBCollection;
+import com.monbodb.BasicDBObject;
+import com.monbodb.DBObject;
+import com.monbodb.DBCursor;
+import com.monbodb.ServerAddress;
+
 public class RunGame
 {
 	LinkedList<MoveResult> fullPlayedGame;
 	LinkedList<MoveResult> player1PlayedGame;
 	LinkedList<MoveResult> player2PlayedGame;
 	int gameIndex = 1;
+
+	String playerName1, playerName2;
+	String bot1Id, bot2Id;
+
+	DB db;
 	
-	RunGame(String bot1Dir, String bot2Dir) throws IOException
+	public RunGame(String gameId, String bot1Id, String bot2Id, String bot1Dir, String bot2Dir) throws IOException
 	{
 		System.out.println("starting");
 		
@@ -29,15 +44,21 @@ public class RunGame
 		Map initMap, map;
 		Player player1, player2;
 		IORobot bot1, bot2;
-		String playerName1, playerName2;
 		int startingArmies;
+
+		db = new MongoClient('localhost', 27017).getDB('test');
+
+		// authentication
+		// boolean auth = db.authenticate(<username>,<password>);
 		
 		//setup the bots
 		//bot1 = new IORobot("java bot.BotStarterJim");		
 		//bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer0 /home/jim/development/the-ai-games-website/bots_temp/test2/");
 		//bot2 = new IORobot("java bot.BotStarterJim");
-		bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer1 " + bot1Dir);
-		bot2 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer2 " + bot2Dir);
+		// bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer1 " + bot1Dir);
+		// bot2 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer2 " + bot2Dir);
+		bot1 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer1 " + bot1Dir);
+		bot2 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer2 " + bot2Dir);
 		playerName1 = "player1";
 		playerName2 = "player2";
 		startingArmies = 5;
@@ -70,7 +91,8 @@ public class RunGame
 		player1PlayedGame = engine.getPlayer1PlayedGame();
 		player2PlayedGame = engine.getPlayer2PlayedGame();
 		
-		this.writeOutputFile(engine.winningPlayer());
+		// this.writeOutputFile(engine.winningPlayer());
+		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr());
 		
 		System.out.println("Done. Output file ready.");
 	}
@@ -398,4 +420,30 @@ public class RunGame
 			out.write("Nobody won\n");
 	}
 
+
+	/*
+	 * MongoDB connection functions
+	 */
+
+	// which dump is being used? this one or the one in the python iowrapper??
+	public function saveDump() {
+		// DBCollection coll = db.getCollection("games");
+
+		// coll.insert(doc)
+	}
+
+	public function saveScore(String game_id, String winnerName, int score) {
+		DBCollection coll = db.getCollection("games");
+
+		BasicDBObject queryDoc = new BasicDBObject()
+			.append("_id", game_id);
+
+		BasicDBObject updateDoc = new BasicDBObject()
+			.append("$set", new BasicDBObject()
+				.append("winner", winner == playerName1 ? bot1Id : bot2Id)
+				.append("score", score)
+			);
+
+		coll.findAndModify(queryDoc, updateDoc);
+	}
 }
