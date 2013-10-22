@@ -89,8 +89,6 @@ public class RunGame
 		
 		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
 		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
-
-
 	}
 	
 	public static void main(String args[]) throws IOException
@@ -440,21 +438,22 @@ public class RunGame
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(game_id));
 
-		ObjectId winnerId;
-		if(winnerName.equals(playerName1))
-			winnerId = new ObjectId(bot1Id);
-		else if(winnerName.equals(playerName2))
-			winnerId = new ObjectId(bot2Id);
-		else
-			winnerId = null;
-
-		DBObject updateDoc = new BasicDBObject()
-			.append("$set", new BasicDBObject()
-				.append("winner", winnerId)
-				.append("score", score)
-				.append("output", outputFile)
-			);
-
+		if(winnerName == null){
+			DBObject updateDoc = new BasicDBObject()
+				.append("$set", new BasicDBObject()
+					.append("winner", null)
+					.append("score", score)
+					.append("output", outputFile)
+				);
+		}
+		else {
+			DBObject updateDoc = new BasicDBObject()
+				.append("$set", new BasicDBObject()
+					.append("winner", winnerName == playerName1 ? new ObjectId(bot1Id) : new ObjectId(bot2Id))
+					.append("score", score)
+					.append("output", outputFile)
+				);
+		}
 		coll.findAndModify(queryDoc, updateDoc);
 
 		System.out.print("Game done... winner: " + winnerName + ", score: " + score + ", file: " + outputFile);
