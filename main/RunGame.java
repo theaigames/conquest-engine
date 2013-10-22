@@ -88,6 +88,8 @@ public class RunGame
 		
 		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
 		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
+
+
 	}
 	
 	public static void main(String args[]) throws IOException
@@ -435,7 +437,7 @@ public class RunGame
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
-			.append("_id", game_id);
+			.append("_id", new ObjectId(game_id));
 
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
