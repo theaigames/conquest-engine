@@ -440,9 +440,15 @@ public class RunGame
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(game_id));
 
+		ObjectId winnerId;
+		if(winner == player1Name)
+			winnerId = new ObjectId(bot1Id);
+		else if (winner == player2Name)
+			winnerId = new ObjectId(bot2Id);
+
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
-				.append("winner", winnerName == playerName1 ? bot1Id : bot2Id)
+				.append("winner", winnerId)
 				.append("score", score)
 				.append("output", outputFile)
 			);
