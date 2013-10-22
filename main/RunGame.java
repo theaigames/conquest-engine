@@ -449,6 +449,8 @@ public class RunGame
 				);
 		}
 		else {
+			System.out.println(bot1Id);
+			System.out.println(bot2Id);
 			updateDoc = new BasicDBObject()
 				.append("$set", new BasicDBObject()
 					.append("winner", winnerName == playerName1 ? new ObjectId(bot1Id) : new ObjectId(bot2Id))
