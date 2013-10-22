@@ -100,6 +100,8 @@ public class RunGame
 		bot1Dir = args[3];
 		bot2Dir = args[4];
 
+		System.out.println("java: " + bot1Id);
+		System.out.println("java: " + bot2Id);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -449,8 +451,6 @@ public class RunGame
 				);
 		}
 		else {
-			System.out.println(bot1Id);
-			System.out.println(bot2Id);
 			updateDoc = new BasicDBObject()
 				.append("$set", new BasicDBObject()
 					.append("winner", winnerName == playerName1 ? new ObjectId(bot1Id) : new ObjectId(bot2Id))
