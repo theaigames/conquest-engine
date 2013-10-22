@@ -41,7 +41,7 @@ public class RunGame
 
 	DB db;
 
-	public static void main(String args[]) throws IOException
+	public static void main(String args[]) throws Exception
 	{	
 		RunGame run = new RunGame(args);
 		run.go();
@@ -121,7 +121,8 @@ public class RunGame
 	}
 
 	//aanpassen en een QPlayer class maken? met eigen finish
-	private void finish(IORobot bot1, IORobot bot2) {
+	private void finish(IORobot bot1, IORobot bot2) throws InterruptedException
+	{
 		bot1.finish();
 		Thread.sleep(200);
 
