@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
+import java.lang.Object;
 
 import move.AttackTransferMove;
 import move.MoveResult;
