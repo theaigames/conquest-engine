@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
+import java.lang.InterruptedException;
+import java.lang.Thread;
 
 import move.AttackTransferMove;
 import move.MoveResult;
@@ -32,11 +34,38 @@ public class RunGame
 	LinkedList<MoveResult> player2PlayedGame;
 	int gameIndex = 1;
 
-	String playerName1, playerName2;
+	String playername1, playerName2;
+	final String gameId,
+			bot1Id, bot2Id,
+			bot1Dir, bot2Dir;
 
 	DB db;
+
+	public static void main(String args[]) throws IOException
+	{	
+		RunGame run = new RunGame(args);
+		run.go();
+		
+		/*SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try { new RunGame(gameId, bot1Id, bot2Id, bot1Dir, bot2Dir); } 
+				catch (IOException e) {}
+			}
+		});*/
+	}
 	
-	public RunGame(String gameId, String bot1Id, String bot2Id, String bot1Dir, String bot2Dir) throws IOException
+	public RunGame(String args[])
+	{
+		this.gameId = args[0];
+		this.bot1Id = args[1];
+		this.bot2Id = args[2];
+		this.bot1Dir = args[3];
+		this.bot2Dir = args[4];
+		playerName1 = "player1";
+		playerName2 = "player2";
+	}
+
+	private void go() throws IOException, InterruptedException
 	{
 		System.out.println("starting");
 		
@@ -54,8 +83,7 @@ public class RunGame
 		//setup the bots
 		bot1 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer1 " + bot1Dir);
 		bot2 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer2 " + bot2Dir);
-		playerName1 = "player1";
-		playerName2 = "player2";
+
 		startingArmies = 5;
 		player1 = new Player(playerName1, bot1, startingArmies);
 		player2 = new Player(playerName2, bot2, startingArmies);
@@ -87,24 +115,21 @@ public class RunGame
 		player2PlayedGame = engine.getPlayer2PlayedGame();
 		
 		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
-		this.saveScore(gameId, bot1Id, bot2Id, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
+		this.saveScore(engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
+
+		finish(bot1, bot2);
 	}
-	
-	public static void main(String args[]) throws IOException
-	{	
-		final String bot1Dir, bot2Dir, bot1Id, bot2Id, gameId;
-		gameId = args[0];
-		bot1Id = args[1];
-		bot2Id = args[2];
-		bot1Dir = args[3];
-		bot2Dir = args[4];
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try { new RunGame(gameId, bot1Id, bot2Id, bot1Dir, bot2Dir); } 
-				catch (IOException e) {}
-			}
-		});
+
+	//aanpassen en een QPlayer class maken? met eigen finish
+	private void finish(IORobot bot1, IORobot bot2) {
+		bot1.finish();
+		Thread.sleep(200);
+
+		bot2.finish();
+		Thread.sleep(200);
+
+		Thread.sleep(200);
+        System.exit(0);
 	}
 
 	//tijdelijk handmatig invoeren
@@ -430,7 +455,7 @@ public class RunGame
 		// coll.insert(doc)
 	}
 
-	public void saveScore(String game_id, String bot1Id, String bot2Id, String winnerName, int score, String outputFile) {
+	public void saveScore(String winnerName, int score, String outputFile) {
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
