@@ -34,7 +34,7 @@ public class RunGame
 	LinkedList<MoveResult> player2PlayedGame;
 	int gameIndex = 1;
 
-	String playername1, playerName2;
+	String playerName1, playerName2;
 	final String gameId,
 			bot1Id, bot2Id,
 			bot1Dir, bot2Dir;
@@ -459,7 +459,7 @@ public class RunGame
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
-			.append("_id", new ObjectId(game_id));
+			.append("_id", new ObjectId(gameId));
 
 		System.out.println("bot1Id: " + bot1Id);
 
