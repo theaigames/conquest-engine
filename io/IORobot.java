@@ -39,6 +39,7 @@ public class IORobot implements Robot
 		handler.writeLine(output);
 		System.out.println(output);
 		String line = handler.readLine(timeOut);
+		System.out.println("out: " + handler.getStdout());
 		System.out.println("read: " + line);
 		System.out.println("err: " + handler.getStderr());
 		return line;
