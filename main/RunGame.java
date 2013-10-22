@@ -33,7 +33,6 @@ public class RunGame
 	int gameIndex = 1;
 
 	String playerName1, playerName2;
-	String bot1Id, bot2Id;
 
 	DB db;
 	
@@ -88,7 +87,7 @@ public class RunGame
 		player2PlayedGame = engine.getPlayer2PlayedGame();
 		
 		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
-		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
+		this.saveScore(gameId, bot1Id, bot2Id, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
 	}
 	
 	public static void main(String args[]) throws IOException
@@ -431,11 +430,13 @@ public class RunGame
 		// coll.insert(doc)
 	}
 
-	public void saveScore(String game_id, String winnerName, int score, String outputFile) {
+	public void saveScore(String game_id, String bot1Id, String bot2Id, String winnerName, int score, String outputFile) {
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(game_id));
+
+		System.out.println("bot1Id: " + bot1Id);
 
 		DBObject updateDoc;
 		ObjectId bot1 = new ObjectId(bot1Id);
