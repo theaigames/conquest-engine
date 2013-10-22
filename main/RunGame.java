@@ -18,6 +18,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 import com.mongodb.DB;
+import com.mongodb.DBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -438,10 +439,10 @@ public class RunGame
 	public void saveScore(String game_id, String winnerName, int score) {
 		DBCollection coll = db.getCollection("games");
 
-		BasicDBObject queryDoc = new BasicDBObject()
+		DBObject queryDoc = new BasicDBObject()
 			.append("_id", game_id);
 
-		BasicDBObject updateDoc = new BasicDBObject()
+		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerName == playerName1 ? bot1Id : bot2Id)
 				.append("score", score)
