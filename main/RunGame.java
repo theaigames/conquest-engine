@@ -88,8 +88,6 @@ public class RunGame
 		
 		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
 		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
-		
-		System.out.println("Done. Output file ready.");
 	}
 	
 	public static void main(String args[]) throws IOException
@@ -447,5 +445,7 @@ public class RunGame
 			);
 
 		coll.findAndModify(queryDoc, updateDoc);
+
+		System.out.print("Game done... winner: " + winnerName + ", score: " + score + ", file: " + outputFile);
 	}
 }
