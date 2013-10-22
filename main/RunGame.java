@@ -446,7 +446,7 @@ public class RunGame
 		else if(winnerName.equals(playerName2))
 			winnerId = new ObjectId(bot2Id);
 		else
-			winnerId = Null;
+			winnerId = null;
 
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
