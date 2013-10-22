@@ -440,7 +440,7 @@ public class RunGame
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(game_id));
 
-		ObjectId winnerId;
+		ObjectId winnerId = new ObjectId();
 		if(winnerName.equals(playerName1))
 			winnerId = new ObjectId(bot1Id);
 		else if (winnerName.equals(playerName2))
