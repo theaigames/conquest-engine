@@ -441,9 +441,9 @@ public class RunGame
 			.append("_id", new ObjectId(game_id));
 
 		ObjectId winnerId;
-		if(winnerName.equals(player1Name))
+		if(winnerName.equals(playerName1))
 			winnerId = new ObjectId(bot1Id);
-		else if (winnerName.equals(player2Name))
+		else if (winnerName.equals(playerName2))
 			winnerId = new ObjectId(bot2Id);
 
 		DBObject updateDoc = new BasicDBObject()
