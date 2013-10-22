@@ -86,8 +86,8 @@ public class RunGame
 		player1PlayedGame = engine.getPlayer1PlayedGame();
 		player2PlayedGame = engine.getPlayer2PlayedGame();
 		
-		// this.writeOutputFile(engine.winningPlayer());
-		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr());
+		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
+		this.saveScore(gameId, engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
 		
 		System.out.println("Done. Output file ready.");
 	}
@@ -356,11 +356,11 @@ public class RunGame
 		return true;
 	}
 	
-	private void writeOutputFile(Player winner)
+	private String writeOutputFile(String gameId, Player winner)
 	{
 		try {
 			//temp
-			String fileString = "/home/jim/development/the-ai-games-website/public/uploads/games/out.txt";
+			String fileString = "/home/jim/development/the-ai-games-website/public/games/gameOutputFile" + gameId + ".txt";
 			FileWriter fileStream = new FileWriter(fileString);
 			BufferedWriter out = new BufferedWriter(fileStream);
 			
@@ -369,9 +369,11 @@ public class RunGame
 			writePlayedGame(winner, out, "player2");
 			
 			out.close();
+			return fileString;
 		}
 		catch(Exception e) {
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error on creating output file: " + e.getMessage());
+			return null;
 		}
 	}
 	
@@ -431,7 +433,7 @@ public class RunGame
 		// coll.insert(doc)
 	}
 
-	public void saveScore(String game_id, String winnerName, int score) {
+	public void saveScore(String game_id, String winnerName, int score, String outputFile) {
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
@@ -441,6 +443,7 @@ public class RunGame
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerName == playerName1 ? bot1Id : bot2Id)
 				.append("score", score)
+				.append("output", outputFile)
 			);
 
 		coll.findAndModify(queryDoc, updateDoc);
