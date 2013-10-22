@@ -52,11 +52,6 @@ public class RunGame
 		// boolean auth = db.authenticate(<username>,<password>);
 		
 		//setup the bots
-		//bot1 = new IORobot("java bot.BotStarterJim");		
-		//bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer0 /home/jim/development/the-ai-games-website/bots_temp/test2/");
-		//bot2 = new IORobot("java bot.BotStarterJim");
-		// bot1 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer1 " + bot1Dir);
-		// bot2 = new IORobot("/home/jim/development/the-ai-games-website/sh/./run_bot.sh aiplayer2 " + bot2Dir);
 		bot1 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer1 " + bot1Dir);
 		bot2 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer2 " + bot2Dir);
 		playerName1 = "player1";
