@@ -438,20 +438,20 @@ public class RunGame
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(game_id));
 
+		DBObject updateDoc = new BasicDBObject();
+
 		if(winnerName == null){
-			DBObject updateDoc = new BasicDBObject()
-				.append("$set", new BasicDBObject()
-					.append("winner", null)
-					.append("score", score)
-					.append("output", outputFile)
+			updateDoc.append("$set", new BasicDBObject()
+					 .append("winner", null)
+					 .append("score", score)
+					 .append("output", outputFile)
 				);
 		}
 		else {
-			DBObject updateDoc = new BasicDBObject()
-				.append("$set", new BasicDBObject()
-					.append("winner", winnerName == playerName1 ? new ObjectId(bot1Id) : new ObjectId(bot2Id))
-					.append("score", score)
-					.append("output", outputFile)
+			updateDoc.append("$set", new BasicDBObject()
+					 .append("winner", winnerName == playerName1 ? new ObjectId(bot1Id) : new ObjectId(bot2Id))
+					 .append("score", score)
+					 .append("output", outputFile)
 				);
 		}
 		coll.findAndModify(queryDoc, updateDoc);
