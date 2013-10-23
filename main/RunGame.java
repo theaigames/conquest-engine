@@ -39,6 +39,8 @@ public class RunGame
 			bot1Id, bot2Id,
 			bot1Dir, bot2Dir;
 
+	Engine engine;
+
 	DB db;
 
 	public static void main(String args[]) throws Exception
@@ -61,15 +63,14 @@ public class RunGame
 		this.bot2Id = args[2];
 		this.bot1Dir = args[3];
 		this.bot2Dir = args[4];
-		playerName1 = "player1";
-		playerName2 = "player2";
+		this.playerName1 = "player1";
+		this.playerName2 = "player2";
 	}
 
 	private void go() throws IOException, InterruptedException
 	{
-		System.out.println("starting");
+		System.out.println("starting game " + gameId);
 		
-		Engine engine;
 		Map initMap, map;
 		Player player1, player2;
 		IORobot bot1, bot2;
@@ -93,7 +94,7 @@ public class RunGame
 		map = setupMap(initMap);
 		
 		//start the engine
-		engine = new Engine(map, player1, player2);
+		this.engine = new Engine(map, player1, player2);
 		
 		//send the bots the info they need to start
 		bot1.writeInfo("settings your_bot " + player1.getName());
@@ -102,20 +103,20 @@ public class RunGame
 		bot2.writeInfo("settings opponent_bot " + player1.getName());
 		sendSetupMapInfo(player1.getBot(), initMap);
 		sendSetupMapInfo(player2.getBot(), initMap);
-		engine.distributeStartingRegions(); //decide the player's starting regions
-		engine.recalculateStartingArmies(); //calculate how much armies the players get at the start of the round (depending on owned SuperRegions)
-		engine.sendAllInfo();
+		this.engine.distributeStartingRegions(); //decide the player's starting regions
+		this.engine.recalculateStartingArmies(); //calculate how much armies the players get at the start of the round (depending on owned SuperRegions)
+		this.engine.sendAllInfo();
 		
 		//play the game
-		while(engine.winningPlayer() == null && engine.getRoundNr() <= 50)
-			engine.playRound();
+		while(this.engine.winningPlayer() == null && this.engine.getRoundNr() <= 50)
+			this.engine.playRound();
 
-		fullPlayedGame = engine.getFullPlayedGame();
-		player1PlayedGame = engine.getPlayer1PlayedGame();
-		player2PlayedGame = engine.getPlayer2PlayedGame();
+		fullPlayedGame = this.engine.getFullPlayedGame();
+		player1PlayedGame = this.engine.getPlayer1PlayedGame();
+		player2PlayedGame = this.engine.getPlayer2PlayedGame();
 		
-		String outputFile = this.writeOutputFile(gameId, engine.winningPlayer());
-		this.saveScore(engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
+		String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
+		// this.saveGame(engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
 
 		finish(bot1, bot2);
 	}
@@ -125,11 +126,24 @@ public class RunGame
 	{
 		bot1.finish();
 		Thread.sleep(200);
+		// System.out.println("\n\n\n\n\n\n\n");
+		// System.out.println("PRINTLING BOT1 IO");
+		// System.out.println(bot1.getStdout());
+		// System.out.println("\n\n\n\n\n\n\n");
 
 		bot2.finish();
 		Thread.sleep(200);
+		// System.out.println("\n\n\n\n\n\n\n");
+		// System.out.println("PRINTLING BOT2 IO");
+		// System.out.println(bot2.getStdout());
+		// System.out.println("\n\n\n\n\n\n\n");
 
 		Thread.sleep(200);
+
+		// write everything
+		String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
+		this.saveGame(this.engine.winningPlayer().getName(), this.engine.getRoundNr(), outputFile, bot1, bot2);
+
         System.exit(0);
 	}
 
@@ -449,41 +463,39 @@ public class RunGame
 	 * MongoDB connection functions
 	 */
 
-	// which dump is being used? this one or the one in the python iowrapper??
-	public void saveDump() {
-		// DBCollection coll = db.getCollection("games");
-
-		// coll.insert(doc)
-	}
-
-	public void saveScore(String winnerName, int score, String outputFile) {
+	public void saveGame(String winnerName, int score, String outputFile, IORobot bot1, IORobot bot2) {
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
 			.append("_id", new ObjectId(gameId));
 
-		System.out.println("bot1Id: " + bot1Id);
+		ObjectId bot1ObjectId = new ObjectId(bot1Id);
+		ObjectId bot2ObjectId = new ObjectId(bot2Id);
 
-		DBObject updateDoc;
-		ObjectId bot1 = new ObjectId(bot1Id);
-		ObjectId bot2 = new ObjectId(bot2Id);
+		ObjectId winnerId = null;
+		if(winnerName != null) {
+			winnerId = winnerName == playerName1 ? bot1ObjectId : bot2ObjectId;
+		}
 
-		if(winnerName == null){
-			updateDoc = new BasicDBObject()
-				.append("$set", new BasicDBObject()
-					.append("winner", null)
-					.append("score", score)
-					.append("output", outputFile)
-				);
-		}
-		else {
-			updateDoc = new BasicDBObject()
-				.append("$set", new BasicDBObject()
-					.append("winner", winnerName == playerName1 ? bot1 : bot2)
-					.append("score", score)
-					.append("output", outputFile)
-				);
-		}
+		DBObject updateDoc = new BasicDBObject()
+			.append("$set", new BasicDBObject()
+				.append("winner", winnerId)
+				.append("score", score)
+				.append("visualization", outputFile)
+				.append("output", new BasicDBObject()
+					.append(bot1Id, bot1.getStdout())
+					.append(bot2Id, bot2.getStdout())
+				)
+				.append("input", new BasicDBObject()
+					.append(bot1Id, bot1.getStdin())
+					.append(bot2Id, bot2.getStdin())
+				)
+				.append("errors", new BasicDBObject()
+					.append(bot1Id, bot1.getStderr())
+					.append(bot2Id, bot2.getStderr())
+				)
+			);
+		
 		coll.findAndModify(queryDoc, updateDoc);
 
 		System.out.print("Game done... winner: " + winnerName + ", score: " + score + ", file: " + outputFile);
