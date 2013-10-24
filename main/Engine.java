@@ -29,7 +29,7 @@ public class Engine {
 		roundNr = 1;
 		moveQueue = new MoveQueue(player1, player2);
 		
-		parser = new Parser(player1, player2, map);
+		parser = new Parser(map);
 		
 		fullPlayedGame = new LinkedList<MoveResult>();
 		player1PlayedGame = new LinkedList<MoveResult>();
@@ -38,13 +38,13 @@ public class Engine {
 	
 	public void playRound()
 	{
-		getMoves(player1.getBot().getPlaceArmiesMoves(2000));
-		getMoves(player2.getBot().getPlaceArmiesMoves(2000));
+		getMoves(player1.getBot().getPlaceArmiesMoves(2000), player1.getName());
+		getMoves(player2.getBot().getPlaceArmiesMoves(2000), player2.getName());
 		
 		executePlaceArmies();
 		
-		getMoves(player1.getBot().getAttackTransferMoves(2000));
-		getMoves(player2.getBot().getAttackTransferMoves(2000));
+		getMoves(player1.getBot().getAttackTransferMoves(2000), player1.getName());
+		getMoves(player2.getBot().getAttackTransferMoves(2000)), player2.getName());
 		
 		moveQueue.orderMoves(roundNr, moveQueue.ORDER_RANDOM); //order random
 		executeAttackTransfer();

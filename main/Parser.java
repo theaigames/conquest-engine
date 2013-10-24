@@ -8,14 +8,10 @@ import move.PlaceArmiesMove;
 
 public class Parser {
 	
-	private Player player1;
-	private Player player2;
 	private Map map;
 	
-	public Parser(Player player1, Player player2, Map map)
+	public Parser(Map map)
 	{
-		this.player1 = player1;
-		this.player2 = player2;
 		this.map = map;
 	}
 	
@@ -45,23 +41,17 @@ public class Parser {
 	
 	//misschien nog veranderen als Move weg gaat.
 	//returns the correct Move. Null if input is incorrect.
-	private Move parseMove(String input)
+	private Move parseMove(String input, String playerName)
 	{
-		Player player = null;
 		int armies = -1;
 		
 		String[] split = input.trim().split(" ");
 
-		if(split[0].equals(player1.getName()))
-			player = player1;
-		else if(split[0].equals(player2.getName()))
-			player = player2;
-		else
+		if(!split[0].equals(playerName))
 		{
-			errorOut("Player does not exist or move format incorrect", input);
+			errorOut("Incorrect player name or move format incorrect", input);
 			return null;
-		}
-			
+		}	
 		
 		if(split[1].equals("place_armies"))		
 		{
@@ -72,8 +62,8 @@ public class Parser {
 			try { armies = Integer.parseInt(split[3]); }
 			catch(Exception e) { errorOut("Number of armies input incorrect", input);}
 		
-			if(!(player == null || region == null || armies == -1))
-				return new PlaceArmiesMove(player.getName(), region, armies);
+			if(!(region == null || armies == -1))
+				return new PlaceArmiesMove(playerName, region, armies);
 			return null;
 		}
 		else if(split[1].equals("attack/transfer"))
@@ -87,8 +77,8 @@ public class Parser {
 			try { armies = Integer.parseInt(split[4]); }
 			catch(Exception e) { errorOut("Number of armies input incorrect", input);}
 
-			if(!(player == null || fromRegion == null || toRegion == null || armies == -1))
-				return new AttackTransferMove(player.getName(), fromRegion, toRegion, armies);
+			if(!(fromRegion == null || toRegion == null || armies == -1))
+				return new AttackTransferMove(playerName, fromRegion, toRegion, armies);
 			return null;
 		}
 
