@@ -164,7 +164,8 @@ public class Engine {
 
 	private void queuePlaceArmies(PlaceArmiesMove plm)
 	{
-		if(plm == null) { System.out.println("Error on place_armies input."); return; }
+		//should not ever happen
+		if(plm == null) { System.err.println("Error on place_armies input."); return; }
 		
 		Region region = plm.getRegion();
 		Player player = getPlayer(plm.getPlayerName());
@@ -188,7 +189,8 @@ public class Engine {
 	
 	private void queueAttackTransfer(AttackTransferMove atm)
 	{
-		if(atm == null){ System.out.println("Error on attack/transfer input."); return; }
+		//should not ever happen
+		if(atm == null){ System.err.println("Error on attack/transfer input."); return; }
 		
 		Region fromRegion = atm.getFromRegion();
 		Region toRegion = atm.getToRegion();

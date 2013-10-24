@@ -68,41 +68,44 @@ public class MoveQueue {
 	//if orderingType is ORDER_CYCLIC, every round an other player moves first on every move.
 	public void orderMoves(int roundNr, int orderingType)
 	{
-		ArrayList<AttackTransferMove> orderedMoves = new ArrayList<AttackTransferMove>();
-		int p = nrOfMovesP1;
-		int i = 0;
-		
-		while(true)
+		if(!attackTransferMoves.isEmpty())
 		{
-			if(i >= p) //when player2 has more moves than player1
+			ArrayList<AttackTransferMove> orderedMoves = new ArrayList<AttackTransferMove>();
+			int p = nrOfMovesP1;
+			int i = 0;
+			
+			while(true)
 			{
-				for(int j=i+p; j<attackTransferMoves.size(); j++)
-					orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
-				break;
-			}
-			if(i+p >= p+nrOfMovesP2) //when player1 has more moves than player2
-			{
-				for(int j=i; j<p; j++)
-					orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
-				break;
+				if(i >= p) //when player2 has more moves than player1
+				{
+					for(int j=i+p; j<attackTransferMoves.size(); j++)
+						orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
+					break;
+				}
+				if(i+p >= p+nrOfMovesP2) //when player1 has more moves than player2
+				{
+					for(int j=i; j<p; j++)
+						orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
+					break;
+				}
+				
+				double rand = Math.random();
+				if((orderingType == ORDER_RANDOM && rand < 0.5) || (orderingType == ORDER_CYCLIC && roundNr%2 == 1))
+				{
+					orderedMoves.add(attackTransferMoves.get(i)); 	//player1's move
+					orderedMoves.add(attackTransferMoves.get(i+p));	//player2's move
+				}
+				else
+				{
+					orderedMoves.add(attackTransferMoves.get(i+p)); //player2's move
+					orderedMoves.add(attackTransferMoves.get(i));	//player1's move
+				}
+
+				i++;
 			}
 			
-			double rand = Math.random();
-			if((orderingType == ORDER_RANDOM && rand < 0.5) || (orderingType == ORDER_CYCLIC && roundNr%2 == 1))
-			{
-				orderedMoves.add(attackTransferMoves.get(i)); 	//player1's move
-				orderedMoves.add(attackTransferMoves.get(i+p));	//player2's move
-			}
-			else
-			{
-				orderedMoves.add(attackTransferMoves.get(i+p)); //player2's move
-				orderedMoves.add(attackTransferMoves.get(i));	//player1's move
-			}
-
-			i++;
+			attackTransferMoves = orderedMoves;
 		}
-		
-		attackTransferMoves = orderedMoves;
 	}
 
 

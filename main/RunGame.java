@@ -115,7 +115,7 @@ public class RunGame
 		player1PlayedGame = this.engine.getPlayer1PlayedGame();
 		player2PlayedGame = this.engine.getPlayer2PlayedGame();
 		
-		String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
+		// String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
 		// this.saveGame(engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
 
 		finish(bot1, bot2);
