@@ -15,7 +15,7 @@ public class Parser {
 		this.map = map;
 	}
 	
-	public ArrayList<Move> parseMoves(String input)
+	public ArrayList<Move> parseMoves(String input, String playerName)
 	{
 		ArrayList<Move> moves = new ArrayList<Move>();
 		
@@ -28,7 +28,7 @@ public class Parser {
 			
 			for(int i=0; i<split.length; i++)
 			{
-				Move move = parseMove(split[i]);
+				Move move = parseMove(split[i], playerName);
 				if(move != null)
 					moves.add(move);
 			}

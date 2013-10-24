@@ -143,9 +143,9 @@ public class Engine {
 		return startingRegions;
 	}
 	
-	private void getMoves(String movesInput)
+	private void getMoves(String movesInput, String playerName)
 	{
-		ArrayList<Move> moves = parser.parseMoves(movesInput);
+		ArrayList<Move> moves = parser.parseMoves(movesInput, playerName);
 		
 		for(Move move : moves)
 		{
