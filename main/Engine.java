@@ -396,7 +396,7 @@ public class Engine {
 			
 			updateMapString = updateMapString.concat(" " + id + " " + playerName + " " + armies);
 		}
-		System.out.println("sending to " + player.getName() + ": " + updateMapString);
+		// System.out.println("sending to " + player.getName() + ": " + updateMapString);
 		player.getBot().writeInfo(updateMapString);
 	}
 	

@@ -40,7 +40,7 @@ public class IORobot implements Robot
 		System.out.println(output);
 		String line = handler.readLine(timeOut);
 		System.out.println("err: " + handler.getStderr());
-		System.out.println("read: " + line);
+		// System.out.println("read: " + line);
 		return line;
 	}
 	
@@ -59,7 +59,7 @@ public class IORobot implements Robot
 	private String getMoves(String moveType, long timeOut)
 	{
 		handler.writeLine("go " + moveType + " " + timeOut);
-		System.out.println("go " + moveType + " " + timeOut);
+		// System.out.println("go " + moveType + " " + timeOut);
 		
 		String line = "";
 		long timeStart = System.currentTimeMillis();
@@ -74,7 +74,7 @@ public class IORobot implements Robot
 		if(line.equals("No moves")) //moet algemener
 			return "";
 
-		System.out.println("read: " + line);
+		// System.out.println("read: " + line);
 		return line;
 	}
 	
