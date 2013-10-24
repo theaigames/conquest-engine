@@ -126,23 +126,15 @@ public class RunGame
 	{
 		bot1.finish();
 		Thread.sleep(200);
-		// System.out.println("\n\n\n\n\n\n\n");
-		// System.out.println("PRINTLING BOT1 IO");
-		// System.out.println(bot1.getStdout());
-		// System.out.println("\n\n\n\n\n\n\n");
 
 		bot2.finish();
 		Thread.sleep(200);
-		// System.out.println("\n\n\n\n\n\n\n");
-		// System.out.println("PRINTLING BOT2 IO");
-		// System.out.println(bot2.getStdout());
-		// System.out.println("\n\n\n\n\n\n\n");
 
 		Thread.sleep(200);
 
 		// write everything
-		String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
-		this.saveGame(this.engine.winningPlayer().getName(), this.engine.getRoundNr(), outputFile, bot1, bot2);
+		// String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
+		this.saveGame(bot1, bot2);
 
         System.exit(0);
 	}
@@ -458,12 +450,64 @@ public class RunGame
 			out.write("Nobody won\n");
 	}
 
+	private String getPlayedGame(Player winner, String gameView)
+	{
+		StringBuffer out = new StringBuffer();
+
+		LinkedList<MoveResult> playedGame;
+		if(gameView.equals("player1"))
+			playedGame = player1PlayedGame;
+		else if(gameView.equals("player2"))
+			playedGame = player2PlayedGame;
+		else
+			playedGame = fullPlayedGame;
+			
+		playedGame.removeLast();
+		int roundNr = 2;
+		out.append("map " + playedGame.getFirst().getMap().getMapString() + "\n");
+		out.append("round 1" + "\n");
+		for(MoveResult moveResult : playedGame)
+		{
+			if(moveResult != null)
+			{
+				if(moveResult.getMove() != null)
+				{
+					try {
+						PlaceArmiesMove plMove = (PlaceArmiesMove) moveResult.getMove();
+						out.append(plMove.getString() + "\n");
+					}
+					catch(Exception e) {
+						AttackTransferMove atMove = (AttackTransferMove) moveResult.getMove();
+						out.append(atMove.getString() + "\n");
+					}
+				out.append("map " + moveResult.getMap().getMapString() + "\n");
+				}
+			}
+			else
+			{
+				out.append("round " + roundNr + "\n");
+				roundNr++;
+			}
+		}
+		
+		if(winner != null)
+			out.append(winner.getName() + " won\n");
+		else
+			out.append("Nobody won\n");
+
+		return out.toString();
+	}
+
 
 	/*
 	 * MongoDB connection functions
 	 */
 
-	public void saveGame(String winnerName, int score, String outputFile, IORobot bot1, IORobot bot2) {
+	public void saveGame(IORobot bot1, IORobot bot2) {
+
+		Player winner = this.engine.winningPlayer();
+		int score = this.engine.getRoundNr();
+
 		DBCollection coll = db.getCollection("games");
 
 		DBObject queryDoc = new BasicDBObject()
@@ -473,15 +517,24 @@ public class RunGame
 		ObjectId bot2ObjectId = new ObjectId(bot2Id);
 
 		ObjectId winnerId = null;
-		if(winnerName != null) {
-			winnerId = winnerName == playerName1 ? bot1ObjectId : bot2ObjectId;
+		if(winner != null) {
+			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
 
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerId)
 				.append("score", score)
-				.append("visualization", outputFile)
+				// .append("visualization", new BasicDBObject()
+				// 	.append("fullGame", getPlayedGame(winner, "fullGame"))
+				// 	.append("player1", getPlayedGame(winner, "player1"))
+				// 	.append("player2", getPlayedGame(winner, "player2"))
+				// )
+				.append("visualization",
+					getPlayedGame(winner, "fullGame") +
+					getPlayedGame(winner, "player1") +
+					getPlayedGame(winner, "player2")
+				)
 				.append("output", new BasicDBObject()
 					.append(bot1Id, bot1.getStdout())
 					.append(bot2Id, bot2.getStdout())
@@ -498,6 +551,6 @@ public class RunGame
 		
 		coll.findAndModify(queryDoc, updateDoc);
 
-		System.out.print("Game done... winner: " + winnerName + ", score: " + score + ", file: " + outputFile);
+		System.out.print("Game done... winner: " + winner.getName() + ", score: " + score);
 	}
 }
