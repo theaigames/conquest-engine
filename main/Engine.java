@@ -44,7 +44,7 @@ public class Engine {
 		executePlaceArmies();
 		
 		getMoves(player1.getBot().getAttackTransferMoves(2000), player1.getName());
-		getMoves(player2.getBot().getAttackTransferMoves(2000)), player2.getName());
+		getMoves(player2.getBot().getAttackTransferMoves(2000), player2.getName());
 		
 		moveQueue.orderMoves(roundNr, moveQueue.ORDER_RANDOM); //order random
 		executeAttackTransfer();
