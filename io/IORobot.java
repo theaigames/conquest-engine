@@ -10,10 +10,12 @@ import move.Move;
 public class IORobot implements Robot
 {
 	IOHandler handler;
+	String dump;
 	
 	public IORobot(String command) throws IOException
 	{
 		handler = new IOHandler(command);
+		dump = "";
 	}
 	
 	@Override
@@ -37,10 +39,9 @@ public class IORobot implements Robot
 			output = output.concat(" " + region.getId());
 		
 		handler.writeLine(output);
-		// System.out.println(output);
 		String line = handler.readLine(timeOut);
-		// System.out.println("err: " + handler.getStderr());
-		// System.out.println("read: " + line);
+		dump += output + '/n';
+		dump += line + '/n';
 		return line;
 	}
 	
@@ -59,7 +60,7 @@ public class IORobot implements Robot
 	private String getMoves(String moveType, long timeOut)
 	{
 		handler.writeLine("go " + moveType + " " + timeOut);
-		// System.out.println("go " + moveType + " " + timeOut);
+		dump += "go " + moveType + " " + timeOut + '/n';
 		
 		String line = "";
 		long timeStart = System.currentTimeMillis();
@@ -68,6 +69,7 @@ public class IORobot implements Robot
 			long timeNow = System.currentTimeMillis();
 			long timeElapsed = timeNow - timeStart;
 			line = handler.readLine(timeOut); //timeOut werkt niet in inStream??? daarom timeout hier.
+			dump += line + '/n';
 			if(timeElapsed >= timeOut)
 				break;
 		}
@@ -81,6 +83,7 @@ public class IORobot implements Robot
 	@Override
 	public void writeInfo(String info){
 		handler.writeLine(info);
+		dump += info + '/n';
 		//System.out.println(info);
 		//System.out.println("readInfo: " + handler.readLine(300));
 		/*String[] test = info.split(" ");
@@ -105,6 +108,10 @@ public class IORobot implements Robot
 	
 	public String getStderr() {
 		return handler.getStderr();
+	}
+
+	public String getDump() {
+		return dump;
 	}
 
 }

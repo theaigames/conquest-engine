@@ -547,6 +547,10 @@ public class RunGame
 					.append(bot1Id, bot1.getStderr())
 					.append(bot2Id, bot2.getStderr())
 				)
+				.append("dump", new BasicDBObject()
+					.append(bot1Id, bot1.getDump())
+					.append(bot2Id, bot2.getDump())
+				)
 			);
 		
 		coll.findAndModify(queryDoc, updateDoc);
