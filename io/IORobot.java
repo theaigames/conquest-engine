@@ -37,9 +37,9 @@ public class IORobot implements Robot
 			output = output.concat(" " + region.getId());
 		
 		handler.writeLine(output);
-		System.out.println(output);
+		// System.out.println(output);
 		String line = handler.readLine(timeOut);
-		System.out.println("err: " + handler.getStderr());
+		// System.out.println("err: " + handler.getStderr());
 		// System.out.println("read: " + line);
 		return line;
 	}

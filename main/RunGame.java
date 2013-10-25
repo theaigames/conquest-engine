@@ -320,11 +320,11 @@ public class RunGame
 		setupNeighborsString = getNeighborsString(initMap);
 		
 		bot.writeInfo(setupSuperRegionsString);
-		System.out.println(setupSuperRegionsString);
+		// System.out.println(setupSuperRegionsString);
 		bot.writeInfo(setupRegionsString);
-		System.out.println(setupRegionsString);
+		// System.out.println(setupRegionsString);
 		bot.writeInfo(setupNeighborsString);
-		System.out.println(setupNeighborsString);
+		// System.out.println(setupNeighborsString);
 	}
 	
 	private String getSuperRegionsString(Map map)
@@ -551,6 +551,6 @@ public class RunGame
 		
 		coll.findAndModify(queryDoc, updateDoc);
 
-		System.out.print("Game done... winner: " + winner.getName() + ", score: " + score);
+		// System.out.print("Game done... winner: " + winner.getName() + ", score: " + score);
 	}
 }
