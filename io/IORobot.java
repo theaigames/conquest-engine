@@ -10,7 +10,7 @@ import move.Move;
 public class IORobot implements Robot
 {
 	IOHandler handler;
-	String dump;
+	StringBuilder dump;
 	
 	public IORobot(String command) throws IOException
 	{
@@ -40,8 +40,8 @@ public class IORobot implements Robot
 		
 		handler.writeLine(output);
 		String line = handler.readLine(timeOut);
-		dump += output + '/n';
-		dump += line + '/n';
+		dump.append(output + "\n");
+		dump.append(line + "\n");
 		return line;
 	}
 	
@@ -60,7 +60,7 @@ public class IORobot implements Robot
 	private String getMoves(String moveType, long timeOut)
 	{
 		handler.writeLine("go " + moveType + " " + timeOut);
-		dump += "go " + moveType + " " + timeOut + '/n';
+		dump.append("go " + moveType + " " + timeOut + "\n");
 		
 		String line = "";
 		long timeStart = System.currentTimeMillis();
@@ -69,7 +69,7 @@ public class IORobot implements Robot
 			long timeNow = System.currentTimeMillis();
 			long timeElapsed = timeNow - timeStart;
 			line = handler.readLine(timeOut); //timeOut werkt niet in inStream??? daarom timeout hier.
-			dump += line + '/n';
+			dump.append(line + "\n");
 			if(timeElapsed >= timeOut)
 				break;
 		}
@@ -83,7 +83,7 @@ public class IORobot implements Robot
 	@Override
 	public void writeInfo(String info){
 		handler.writeLine(info);
-		dump += info + '/n';
+		dump.append(info + "\n");
 		//System.out.println(info);
 		//System.out.println("readInfo: " + handler.readLine(300));
 		/*String[] test = info.split(" ");
@@ -111,7 +111,7 @@ public class IORobot implements Robot
 	}
 
 	public String getDump() {
-		return dump;
+		return dump.toString();
 	}
 
 }
