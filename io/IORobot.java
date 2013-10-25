@@ -15,7 +15,7 @@ public class IORobot implements Robot
 	public IORobot(String command) throws IOException
 	{
 		handler = new IOHandler(command);
-		dump = "";
+		dump = new StringBuilder();
 	}
 	
 	@Override
