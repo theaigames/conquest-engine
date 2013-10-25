@@ -109,7 +109,11 @@ public class RunGame
 		
 		//play the game
 		while(this.engine.winningPlayer() == null && this.engine.getRoundNr() <= 50)
+		{
+			bot1.addToDump("Round " + this.engine.getRoundNr());
+			bot2.addToDump("Round " + this.engine.getRoundNr());
 			this.engine.playRound();
+		}
 
 		fullPlayedGame = this.engine.getFullPlayedGame();
 		player1PlayedGame = this.engine.getPlayer1PlayedGame();

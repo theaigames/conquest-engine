@@ -93,6 +93,11 @@ public class IORobot implements Robot
 			handler.err.buffer.delete(0, handler.err.buffer.length());
 		}*/
 	}
+
+	public void addToDump(String dumpy){
+		dump.append(dumpy);
+	}
+
 	
 	public void finish() {
 		handler.stop();
