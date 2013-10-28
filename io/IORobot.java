@@ -64,7 +64,7 @@ public class IORobot implements Robot
 		
 		String line = "";
 		long timeStart = System.currentTimeMillis();
-		while(line.length() < 1)
+		while(line != null && line.length() < 1)
 		{
 			long timeNow = System.currentTimeMillis();
 			long timeElapsed = timeNow - timeStart;
@@ -73,7 +73,7 @@ public class IORobot implements Robot
 			if(timeElapsed >= timeOut)
 				break;
 		}
-		if(line.equals("No moves")) //moet algemener
+		if(line == null || line.equals("No moves")) //moet algemener
 			return "";
 
 		// System.out.println("read: " + line);
