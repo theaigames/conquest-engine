@@ -2,6 +2,8 @@ package main;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Collections;
 
 import move.AttackTransferMove;
 import move.Move;
@@ -92,40 +94,58 @@ public class Engine {
 		ArrayList<Region> givenP2Regions = new ArrayList<Region>();
 		
 		//if the bot did not correctly return his starting regions, get some random ones
-		if(p1Regions == null)
-			p1Regions = getRandomStartingRegions(pickableRegions);
-		if(p2Regions == null)
-			p2Regions = getRandomStartingRegions(pickableRegions);
+		if(p1Regions == null) {
+			p1Regions = new ArrayList<Region>();
+			// p1Regions = getRandomStartingRegions(pickableRegions);
+		}
+		if(p2Regions == null) {
+			p2Regions = new ArrayList<Region>();
+			// p2Regions = getRandomStartingRegions(pickableRegions);
+		}
+
+		p1Regions.addAll(getRandomStartingRegions(pickableRegions));
+		System.out.println("p1Regions has size: " + p1Regions.size());
+		p2Regions.addAll(getRandomStartingRegions(pickableRegions));
+		System.out.println("p2Regions has size: " + p2Regions.size());
 		
 		//distribute the starting regions
 		int i1, i2, n;
 		i1 = 0; i2 = 0;
 		n = 0;
-		while(n < nrOfStartingRegions)
-		{
+		System.out.println("p1 regions:");
+		for (Region r : p1Regions) {
+			System.out.println(r.getId());
+		}
+		System.out.println("p2 regions:");
+		for (Region r : p2Regions) {
+			System.out.println(r.getId());
+		}
+		while(n < nrOfStartingRegions) {
 			Region p1Region = p1Regions.get(i1);
 			Region p2Region = p2Regions.get(i2);
 			
-			if(givenP2Regions.contains(p1Region)) //preferred region for player1 is not given to player2 already
+			if(givenP2Regions.contains(p1Region)) {//preferred region for player1 is not given to player2 already
 				i1++;
-			else if(givenP1Regions.contains(p2Region)) //preferred region for player2 is not given to player1 already
+				// n++;
+			} else if(givenP1Regions.contains(p2Region)) { //preferred region for player2 is not given to player1 already
 				i2++;
-			else if(p1Region != p2Region)
-			{
+				// n++;
+			} else if(p1Region != p2Region) {
 				p1Region.setPlayerName(player1.getName());
 				p2Region.setPlayerName(player2.getName());
 				givenP1Regions.add(p1Region);
 				givenP2Regions.add(p2Region);
 				n++; i1++; i2++;
-			}
-			else //random player gets the region if same preference
-			{
+			} else { //random player gets the region if same preference
 				double rand = Math.random();
-				if(rand < 0.5)
+				if(rand < 0.5) {
 					i1++;
-				else
+				} else {
 					i2++;
+				}
 			}
+
+			System.out.println("i1: " + i1 + ", i2: " + i2 + ", n: " + n);
 		}
 		
 		fullPlayedGame.add(new MoveResult(null, map.getMapCopy()));
@@ -133,17 +153,23 @@ public class Engine {
 		player2PlayedGame.add(new MoveResult(null, map.getVisibleMapCopyForPlayer(player2)));
 	}
 	
-	private ArrayList<Region> getRandomStartingRegions(ArrayList<Region> pickableRegions)
+	private List<Region> getRandomStartingRegions(ArrayList<Region> pickableRegions)
 	{
-		ArrayList<Region> startingRegions = new ArrayList<Region>();
-		for(int i=0; i<6; i++)
-		{
-			double rand = Math.random();
-			int randomIndex = (int) rand * pickableRegions.size();
-			Region randomRegion = pickableRegions.get(randomIndex);
-			startingRegions.add(randomRegion);
-		}
+		List<Region> startingRegions = new ArrayList<Region>(pickableRegions);
+		Collections.shuffle(startingRegions);
+
+		startingRegions = startingRegions.subList(0,6);
 		return startingRegions;
+
+		// ArrayList<Region> startingRegions = new ArrayList<Region>();
+		// for(int i=0; i<6; i++)
+		// {
+		// 	double rand = Math.random();
+		// 	int randomIndex = (int) (rand * pickableRegions.size());
+		// 	Region randomRegion = pickableRegions.get(randomIndex);
+		// 	startingRegions.add(randomRegion);
+		// }
+		// return startingRegions;
 	}
 	
 	private void getMoves(String movesInput, String playerName)
