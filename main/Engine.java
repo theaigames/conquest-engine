@@ -104,22 +104,22 @@ public class Engine {
 		}
 
 		p1Regions.addAll(getRandomStartingRegions(pickableRegions));
-		System.out.println("p1Regions has size: " + p1Regions.size());
+		// System.out.println("p1Regions has size: " + p1Regions.size());
 		p2Regions.addAll(getRandomStartingRegions(pickableRegions));
-		System.out.println("p2Regions has size: " + p2Regions.size());
+		// System.out.println("p2Regions has size: " + p2Regions.size());
 		
 		//distribute the starting regions
 		int i1, i2, n;
 		i1 = 0; i2 = 0;
 		n = 0;
-		System.out.println("p1 regions:");
-		for (Region r : p1Regions) {
-			System.out.println(r.getId());
-		}
-		System.out.println("p2 regions:");
-		for (Region r : p2Regions) {
-			System.out.println(r.getId());
-		}
+		// System.out.println("p1 regions:");
+		// for (Region r : p1Regions) {
+		// 	System.out.println(r.getId());
+		// }
+		// System.out.println("p2 regions:");
+		// for (Region r : p2Regions) {
+		// 	System.out.println(r.getId());
+		// }
 		while(n < nrOfStartingRegions) {
 			Region p1Region = p1Regions.get(i1);
 			Region p2Region = p2Regions.get(i2);
@@ -145,7 +145,7 @@ public class Engine {
 				}
 			}
 
-			System.out.println("i1: " + i1 + ", i2: " + i2 + ", n: " + n);
+			// System.out.println("i1: " + i1 + ", i2: " + i2 + ", n: " + n);
 		}
 		
 		fullPlayedGame.add(new MoveResult(null, map.getMapCopy()));
