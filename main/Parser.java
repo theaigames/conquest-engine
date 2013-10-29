@@ -57,7 +57,7 @@ public class Parser {
 		{
 			Region region = null;
 
-			region = parseRegion(split[2], input);
+			region = parseRegion(split[2], input, player);
 
 			try { armies = Integer.parseInt(split[3]); }
 			catch(Exception e) { errorOut("Number of armies input incorrect", input, player);}
@@ -71,8 +71,8 @@ public class Parser {
 			Region fromRegion = null;
 			Region toRegion = null;
 			
-			fromRegion = parseRegion(split[2], input);
-			toRegion = parseRegion(split[3], input);
+			fromRegion = parseRegion(split[2], input, player);
+			toRegion = parseRegion(split[3], input, player);
 			
 			try { armies = Integer.parseInt(split[4]); }
 			catch(Exception e) { errorOut("Number of armies input incorrect", input, player);}
@@ -87,7 +87,7 @@ public class Parser {
 	}
 	
 	//parse the region given the id string.
-	private Region parseRegion(String regionId, String input)
+	private Region parseRegion(String regionId, String input, Player player)
 	{
 		int id = -1;
 		Region region;
@@ -111,7 +111,7 @@ public class Parser {
 			for(int i=0; i<nrOfPreferredStartingRegions; i++)
 			{
 				try {
-					Region r = parseRegion(split[i], input);
+					Region r = parseRegion(split[i], input, player);
 					
 					if(pickableRegions.contains(r))
 					{
