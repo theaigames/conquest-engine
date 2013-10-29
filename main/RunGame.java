@@ -47,13 +47,6 @@ public class RunGame
 	{	
 		RunGame run = new RunGame(args);
 		run.go();
-		
-		/*SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try { new RunGame(gameId, bot1Id, bot2Id, bot1Dir, bot2Dir); } 
-				catch (IOException e) {}
-			}
-		});*/
 	}
 	
 	public RunGame(String args[])
@@ -108,7 +101,7 @@ public class RunGame
 		this.engine.sendAllInfo();
 		
 		//play the game
-		while(this.engine.winningPlayer() == null && this.engine.getRoundNr() <= 50)
+		while(this.engine.winningPlayer() == null && this.engine.getRoundNr() <= 100)
 		{
 			bot1.addToDump("Round " + this.engine.getRoundNr() + "\n");
 			bot2.addToDump("Round " + this.engine.getRoundNr() + "\n");
