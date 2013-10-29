@@ -11,11 +11,14 @@ public class IORobot implements Robot
 {
 	IOHandler handler;
 	StringBuilder dump;
+	int errorCounter;
+	final int maxErrors = 2;
 	
 	public IORobot(String command) throws IOException
 	{
 		handler = new IOHandler(command);
 		dump = new StringBuilder();
+		errorCounter = 0;
 	}
 	
 	@Override
@@ -59,24 +62,31 @@ public class IORobot implements Robot
 	
 	private String getMoves(String moveType, long timeOut)
 	{
-		handler.writeLine("go " + moveType + " " + timeOut);
-		dump.append("go " + moveType + " " + timeOut + "\n");
-		
 		String line = "";
-		long timeStart = System.currentTimeMillis();
-		while(line != null && line.length() < 1)
+		if(errorCounter < maxErrors)
 		{
-			long timeNow = System.currentTimeMillis();
-			long timeElapsed = timeNow - timeStart;
-			line = handler.readLine(timeOut); //timeOut werkt niet in inStream??? daarom timeout hier.
-			dump.append(line + "\n");
-			if(timeElapsed >= timeOut)
-				break;
+			handler.writeLine("go " + moveType + " " + timeOut);
+			dump.append("go " + moveType + " " + timeOut + "\n");
+			
+			
+			long timeStart = System.currentTimeMillis();
+			while(line != null && line.length() < 1)
+			{
+				long timeNow = System.currentTimeMillis();
+				long timeElapsed = timeNow - timeStart;
+				line = handler.readLine(timeOut); //timeOut werkt niet in inStream??? daarom timeout hier.
+				dump.append(line + "\n");
+				if(timeElapsed >= timeOut)
+					break;
+			}
+			if(line.equals("No moves")) //moet algemener
+				return "";
+			else if(line == null) {
+				errorCounter++;
+				return "";
+			}
 		}
-		if(line == null || line.equals("No moves")) //moet algemener
-			return "";
-
-		// System.out.println("read: " + line);
+		// System.out.println("reading " + line);
 		return line;
 	}
 	
