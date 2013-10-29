@@ -79,12 +79,12 @@ public class IORobot implements Robot
 				if(timeElapsed >= timeOut)
 					break;
 			}
-			if(line.equals("No moves")) //moet algemener
-				return "";
-			else if(line == null) {
+			if(line == null) {
 				errorCounter++;
 				return "";
 			}
+			if(line.equals("No moves")) //moet algemener
+				return "";
 		}
 		// System.out.println("reading " + line);
 		return line;
