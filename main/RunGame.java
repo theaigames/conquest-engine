@@ -103,6 +103,7 @@ public class RunGame
 		//play the game
 		while(this.engine.winningPlayer() == null && this.engine.getRoundNr() <= 100)
 		{
+			System.out.println("New Round: " + this.engine.getRoundNr());
 			bot1.addToDump("Round " + this.engine.getRoundNr() + "\n");
 			bot2.addToDump("Round " + this.engine.getRoundNr() + "\n");
 			this.engine.playRound();

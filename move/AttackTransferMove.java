@@ -59,5 +59,4 @@ public class AttackTransferMove extends Move {
 		else
 			return getPlayerName() + " illegal_move " + getIllegalMove();
 	}
-
 }
