@@ -82,7 +82,7 @@ public class Parser {
 			return null;
 		}
 
-		errorOut("Bot's move format incorrect", input);
+		errorOut("Bot's move format incorrect", input, player);
 		return null;
 	}
 	
@@ -100,7 +100,7 @@ public class Parser {
 		return region;
 	}
 	
-	public ArrayList<Region> parsePreferredStartingRegions(String input, ArrayList<Region> pickableRegions)
+	public ArrayList<Region> parsePreferredStartingRegions(String input, ArrayList<Region> pickableRegions, Player player)
 	{
 		ArrayList<Region> preferredStartingRegions = new ArrayList<Region>();
 

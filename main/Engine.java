@@ -88,8 +88,8 @@ public class Engine {
 		}
 		
 		//get the preferred starting regions from the players
-		ArrayList<Region> p1Regions = parser.parsePreferredStartingRegions(player1.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions);
-		ArrayList<Region> p2Regions = parser.parsePreferredStartingRegions(player2.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions);
+		ArrayList<Region> p1Regions = parser.parsePreferredStartingRegions(player1.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions, player1);
+		ArrayList<Region> p2Regions = parser.parsePreferredStartingRegions(player2.getBot().getPreferredStartingArmies(2000, pickableRegions), pickableRegions, player2);
 		ArrayList<Region> givenP1Regions = new ArrayList<Region>();
 		ArrayList<Region> givenP2Regions = new ArrayList<Region>();
 		
