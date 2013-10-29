@@ -15,7 +15,7 @@ public class Parser {
 		this.map = map;
 	}
 	
-	public ArrayList<Move> parseMoves(String input, String playerName)
+	public ArrayList<Move> parseMoves(String input, Player player)
 	{
 		ArrayList<Move> moves = new ArrayList<Move>();
 		
@@ -28,28 +28,28 @@ public class Parser {
 			
 			for(int i=0; i<split.length; i++)
 			{
-				Move move = parseMove(split[i], playerName);
+				Move move = parseMove(split[i], player);
 				if(move != null)
 					moves.add(move);
 			}
 		}
 		catch(Exception e) {
-			System.err.println("Move input is null");
+			player.getBot().addToDump("Move input is null");
 		}
 		return moves;
 	}
 	
 	//misschien nog veranderen als Move weg gaat.
 	//returns the correct Move. Null if input is incorrect.
-	private Move parseMove(String input, String playerName)
+	private Move parseMove(String input, Player player)
 	{
 		int armies = -1;
 		
 		String[] split = input.trim().split(" ");
 
-		if(!split[0].equals(playerName))
+		if(!split[0].equals(player.getName()))
 		{
-			errorOut("Incorrect player name or move format incorrect", input);
+			errorOut("Incorrect player name or move format incorrect", input, player);
 			return null;
 		}	
 		
@@ -60,10 +60,10 @@ public class Parser {
 			region = parseRegion(split[2], input);
 
 			try { armies = Integer.parseInt(split[3]); }
-			catch(Exception e) { errorOut("Number of armies input incorrect", input);}
+			catch(Exception e) { errorOut("Number of armies input incorrect", input, player);}
 		
 			if(!(region == null || armies == -1))
-				return new PlaceArmiesMove(playerName, region, armies);
+				return new PlaceArmiesMove(player.getName(), region, armies);
 			return null;
 		}
 		else if(split[1].equals("attack/transfer"))
@@ -75,10 +75,10 @@ public class Parser {
 			toRegion = parseRegion(split[3], input);
 			
 			try { armies = Integer.parseInt(split[4]); }
-			catch(Exception e) { errorOut("Number of armies input incorrect", input);}
+			catch(Exception e) { errorOut("Number of armies input incorrect", input, player);}
 
 			if(!(fromRegion == null || toRegion == null || armies == -1))
-				return new AttackTransferMove(playerName, fromRegion, toRegion, armies);
+				return new AttackTransferMove(player.getName(), fromRegion, toRegion, armies);
 			return null;
 		}
 
@@ -93,7 +93,7 @@ public class Parser {
 		Region region;
 		
 		try { id = Integer.parseInt(regionId); }
-		catch(Exception e) { errorOut("Region id input incorrect", input); return null;}
+		catch(Exception e) { errorOut("Region id input incorrect", input, player); return null;}
 		
 		region = map.getRegion(id);
 		
@@ -119,32 +119,32 @@ public class Parser {
 							preferredStartingRegions.add(r);
 						else
 						{
-							errorOut("preferred starting regions: Same region appears more than once", input);
+							errorOut("preferred starting regions: Same region appears more than once", input, player);
 							return null;
 						}
 					}
 					else
 					{
-						errorOut("preferred starting regions: Chosen region is not in the given pickable regions list", input);
+						errorOut("preferred starting regions: Chosen region is not in the given pickable regions list", input, player);
 						return null;
 					}
 				}
 				catch(Exception e) { //player has not returned enough preferred regions
-					errorOut("preferred starting regions: Player did not return enough preferred starting regions", input);
+					errorOut("preferred starting regions: Player did not return enough preferred starting regions", input, player);
 					return null;
 				}
 			}
 			return preferredStartingRegions;
 		}
 		catch(Exception e) {
-			System.err.println("Preferred starting regions input is null");
+			player.getBot().addToDump("Preferred starting regions input is null");
 			return null;
 		}
 	}
 
-	private void errorOut(String error, String input)
+	private void errorOut(String error, String input, Player player)
 	{
-		System.err.println("Parse error: " + error + " (" + input + ")");
+		player.getBot().addToDump("Parse error: " + error + " (" + input + ")");
 	}
 
 }

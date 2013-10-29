@@ -502,8 +502,6 @@ public class RunGame
 
 	public void saveGame(IORobot bot1, IORobot bot2) {
 
-		System.out.println("starting saveGame");
-
 		Player winner = this.engine.winningPlayer();
 		int score = this.engine.getRoundNr();
 
@@ -555,7 +553,5 @@ public class RunGame
 		coll.findAndModify(queryDoc, updateDoc);
 
 		// System.out.print("Game done... winner: " + winner.getName() + ", score: " + score);
-
-		System.out.println("Savegame Done");
 	}
 }
