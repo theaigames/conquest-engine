@@ -86,6 +86,11 @@ public class IORobot implements Robot
 			if(line.equals("No moves")) //moet algemener
 				return "";
 		}
+		else
+		{
+			dump.append("go " + moveType + " " + timeOut + "\n");
+			dump.append("Maximum number of idle moves returned: skipping move (let bot return 'No moves' instead of nothing)");
+		}
 		// System.out.println("reading " + line);
 		return line;
 	}
