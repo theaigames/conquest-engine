@@ -40,16 +40,16 @@ public class Engine {
 	
 	public void playRound()
 	{
-		getMoves(player1.getBot().getPlaceArmiesMoves(2000), player1.getName());
-		getMoves(player2.getBot().getPlaceArmiesMoves(2000), player2.getName());
+		getMoves(player1.getBot().getPlaceArmiesMoves(2000), player1);
+		getMoves(player2.getBot().getPlaceArmiesMoves(2000), player2);
 		
 		executePlaceArmies();
 
 		sendUpdateMapInfo(player1);
 		sendUpdateMapInfo(player2);
 		
-		getMoves(player1.getBot().getAttackTransferMoves(2000), player1.getName());
-		getMoves(player2.getBot().getAttackTransferMoves(2000), player2.getName());
+		getMoves(player1.getBot().getAttackTransferMoves(2000), player1);
+		getMoves(player2.getBot().getAttackTransferMoves(2000), player2);
 		
 		moveQueue.orderMoves(roundNr, moveQueue.ORDER_RANDOM); //order random
 		executeAttackTransfer();
@@ -172,9 +172,9 @@ public class Engine {
 		// return startingRegions;
 	}
 	
-	private void getMoves(String movesInput, String playerName)
+	private void getMoves(String movesInput, Player player)
 	{
-		ArrayList<Move> moves = parser.parseMoves(movesInput, playerName);
+		ArrayList<Move> moves = parser.parseMoves(movesInput, player);
 		
 		for(Move move : moves)
 		{
