@@ -450,7 +450,7 @@ public class Engine {
 
 		if(player == player1)
 			opponentMoves = opponentMovesPlayer1;
-		else if(player == player2)
+		else
 			opponentMoves = opponentMovesPlayer2;
 
 		for(Move move : opponentMoves)
