@@ -265,24 +265,26 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
+		LinkedList<Region> oldMap = map.getMapCopy();
 		
 		for(AttackTransferMove move : moveQueue.attackTransferMoves)
 		{	
 			if(move.getIllegalMove().equals("")) //the move is not illegal
 			{
 				Region fromRegion = move.getFromRegion();
+				Region oldFromRegion = oldMap.getRegion(move.getFromRegion.getId());
 				Region toRegion = move.getToRegion();
 				Player player = getPlayer(move.getPlayerName());
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
+					if(oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
+						move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
+					
 					if(toRegion.ownedByPlayer(player.getName())) //transfer
 					{
 						if(fromRegion.getArmies() > 1)
 						{
-							if(fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion?
-								move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
-							
 							fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
 							toRegion.setArmies(toRegion.getArmies() + move.getArmies());
 						}
