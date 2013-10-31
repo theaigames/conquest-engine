@@ -446,7 +446,7 @@ public class Engine {
 	private void sendOpponentMovesInfo(Player player)
 	{
 		String opponentMovesString = "opponent_moves";
-		LinkedList<Moves> opponentMoves;
+		LinkedList<Move> opponentMoves;
 
 		if(player == player1)
 			opponentMoves = opponentMovesPlayer1;
@@ -454,8 +454,19 @@ public class Engine {
 			opponentMoves = opponentMovesPlayer2;
 
 		for(Move move : opponentMoves)
+		{
 			if(move.getIllegalMove.equals(""))
-				opponentMovesString = opponentMovesString.concat(move.getString() + ",");
+			{
+				try {
+					PlaceArmiesMove plm = (PlaceArmiesMove) move;
+					opponentMovesString = opponentMovesString.concat(plm.getString() + ",");
+				}
+				catch(Exception e) {
+					AttackTransferMove atm = (AttackTransferMove) move;
+					opponentMovesString = opponentMovesString.concat(atm.getString() + ",");					
+				}
+			}
+		}
 		
 		opponentMovesString = opponentMovesString.substring(0, opponentMovesString.length()-1);
 
