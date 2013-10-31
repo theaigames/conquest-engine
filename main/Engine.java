@@ -455,7 +455,7 @@ public class Engine {
 
 		for(Move move : opponentMoves)
 		{
-			if(move.getIllegalMove.equals(""))
+			if(move.getIllegalMove().equals(""))
 			{
 				try {
 					PlaceArmiesMove plm = (PlaceArmiesMove) move;
