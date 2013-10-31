@@ -202,7 +202,7 @@ public class Engine {
 			player.setArmiesLeft(player.getArmiesLeft() - plm.getArmies());
 		}
 		else
-			plm.setIllegalMove(plm.getRegion().getId() + " place_armies " + "doesn't own ");
+			plm.setIllegalMove(plm.getRegion().getId() + " place_armies " + " not owned");
 
 		moveQueue.addMove(plm);
 	}
@@ -287,7 +287,7 @@ public class Engine {
 							toRegion.setArmies(toRegion.getArmies() + move.getArmies());
 						}
 						else
-							move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only 1 army on ");
+							move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
 					}
 					else //attack
 						doAttack(move);
@@ -372,7 +372,7 @@ public class Engine {
 			}
 		}
 		else
-			move.setIllegalMove(move.getFromRegion().getId() + " attack " + "only 1 army on ");
+			move.setIllegalMove(move.getFromRegion().getId() + " attack " + "only has 1 army");
 	}
 	
 	public Player winningPlayer()
