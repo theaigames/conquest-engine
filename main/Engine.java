@@ -265,14 +265,14 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
-		LinkedList<Region> oldMap = map.getMapCopy();
+		Map oldMap = map.getMapCopy();
 		
 		for(AttackTransferMove move : moveQueue.attackTransferMoves)
 		{	
 			if(move.getIllegalMove().equals("")) //the move is not illegal
 			{
 				Region fromRegion = move.getFromRegion();
-				Region oldFromRegion = oldMap.getRegion(move.getFromRegion.getId());
+				Region oldFromRegion = oldMap.getRegion(move.getFromRegion().getId());
 				Region toRegion = move.getToRegion();
 				Player player = getPlayer(move.getPlayerName());
 				
