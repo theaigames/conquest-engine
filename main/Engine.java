@@ -21,6 +21,8 @@ public class Engine {
 	private LinkedList<MoveResult> fullPlayedGame;
 	private LinkedList<MoveResult> player1PlayedGame;
 	private LinkedList<MoveResult> player2PlayedGame;
+	private LinkedList<Move> opponentMovesPlayer1;
+	private LinkedList<Move> opponentMovesPlayer2;
 	private MoveQueue moveQueue;
 
 	public Engine(Map initMap, Player player1, Player player2)
@@ -36,6 +38,8 @@ public class Engine {
 		fullPlayedGame = new LinkedList<MoveResult>();
 		player1PlayedGame = new LinkedList<MoveResult>();
 		player2PlayedGame = new LinkedList<MoveResult>();
+		opponentMovesPlayer1 = new LinkedList<Move>();
+		opponentMovesPlayer2 = new LinkedList<Move>();
 	}
 	
 	public void playRound()
@@ -160,16 +164,6 @@ public class Engine {
 
 		startingRegions = startingRegions.subList(0,6);
 		return startingRegions;
-
-		// ArrayList<Region> startingRegions = new ArrayList<Region>();
-		// for(int i=0; i<6; i++)
-		// {
-		// 	double rand = Math.random();
-		// 	int randomIndex = (int) (rand * pickableRegions.size());
-		// 	Region randomRegion = pickableRegions.get(randomIndex);
-		// 	startingRegions.add(randomRegion);
-		// }
-		// return startingRegions;
 	}
 	
 	private void getMoves(String movesInput, Player player)
@@ -254,9 +248,17 @@ public class Engine {
 			Map mapCopy = map.getMapCopy();
 			fullPlayedGame.add(new MoveResult(move, mapCopy));
 			if(map.visibleRegionsForPlayer(player1).contains(move.getRegion()))
-				player1PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player1)));
+			{
+				player1PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player1))); //for the game file
+				if(move.getPlayerName().equals(player2.getName()))
+					opponentMovesPlayer1.add(move); //for the opponent_moves output
+			}
 			if(map.visibleRegionsForPlayer(player2).contains(move.getRegion()))
-				player2PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player2)));
+			{
+				player2PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player2))); //for the game file
+				if(move.getPlayerName().equals(player2.getName()))
+					opponentMovesPlayer1.add(move); //for the opponent_moves output
+			}
 		}
 	}
 
@@ -302,10 +304,18 @@ public class Engine {
 			fullPlayedGame.add(new MoveResult(move, map.getMapCopy()));
 			if(visibleRegionsPlayer1Map.contains(move.getFromRegion()) || visibleRegionsPlayer1Map.contains(move.getToRegion()) ||
 					visibleRegionsPlayer1OldMap.contains(move.getToRegion()))
-				player1PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player1)));
+			{
+				player1PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player1))); //for the game file
+				if(move.getPlayerName().equals(player2.getName()))
+					opponentMovesPlayer1.add(move); //for the opponent_moves output
+			}
 			if(visibleRegionsPlayer2Map.contains(move.getFromRegion()) || visibleRegionsPlayer2Map.contains(move.getToRegion()) ||
 					visibleRegionsPlayer2OldMap.contains(move.getToRegion()))
-				player2PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player2)));
+			{
+				player2PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player2))); //for the game file
+				if(move.getPlayerName().equals(player1.getName()))
+					opponentMovesPlayer2.add(move); //for the opponent_moves output
+			}
 			
 			visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 			visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
@@ -399,6 +409,10 @@ public class Engine {
 		sendStartingArmiesInfo(player2);
 		sendUpdateMapInfo(player1);
 		sendUpdateMapInfo(player2);
+		sendOpponentMovesInfo(player1);
+		sendOpponentMovesInfo(player2);
+		opponentMovesPlayer1.clear();
+		opponentMovesPlayer2.clear();
 	}
 		
 	//inform the player about how much armies he can place at the start next round
@@ -427,6 +441,26 @@ public class Engine {
 		}
 		// System.out.println("sending to " + player.getName() + ": " + updateMapString);
 		player.getBot().writeInfo(updateMapString);
+	}
+
+	private void sendOpponentMovesInfo(Player player)
+	{
+		String opponentMovesString = "opponent_moves";
+		LinkedList<Moves> opponentMoves;
+
+		if(player == player1)
+			opponentMoves = opponentMovesPlayer1;
+		else if(player == player2)
+			opponentMoves = opponentMovesPlayer2;
+
+		for(Move move : opponentMoves)
+			if(move.getIllegalMove.equals(""))
+				opponentMovesString = opponentMovesString.concat(move.getString() + ",");
+		
+		opponentMovesString = opponentMovesString.substring(0, opponentMovesString.length()-1);
+
+		// System.out.println("sending to " + player.getName() + ": " + opponentMovesString);
+		player.getBot().writeInfo(opponentMovesString);
 	}
 	
 	private Player getPlayer(String playerName)
