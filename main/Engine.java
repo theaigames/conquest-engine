@@ -445,7 +445,7 @@ public class Engine {
 
 	private void sendOpponentMovesInfo(Player player)
 	{
-		String opponentMovesString = "opponent_moves";
+		String opponentMovesString = "opponent_moves ";
 		LinkedList<Move> opponentMoves;
 
 		if(player == player1)
