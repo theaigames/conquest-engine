@@ -407,8 +407,8 @@ public class Engine {
 		sendUpdateMapInfo(player1);
 		sendUpdateMapInfo(player2);
 		sendOpponentMovesInfo(player1);
-		sendOpponentMovesInfo(player2);
 		opponentMovesPlayer1.clear();
+		sendOpponentMovesInfo(player2);
 		opponentMovesPlayer2.clear();
 	}
 		
@@ -443,11 +443,11 @@ public class Engine {
 	private void sendOpponentMovesInfo(Player player)
 	{
 		String opponentMovesString = "opponent_moves ";
-		LinkedList<Move> opponentMoves;
+		LinkedList<Move> opponentMoves = new LinkedList<Move>();
 
 		if(player == player1)
 			opponentMoves = opponentMovesPlayer1;
-		else
+		else if(player == player2)
 			opponentMoves = opponentMovesPlayer2;
 
 		for(Move move : opponentMoves)
