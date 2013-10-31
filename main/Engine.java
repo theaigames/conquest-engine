@@ -253,7 +253,7 @@ public class Engine {
 			if(map.visibleRegionsForPlayer(player2).contains(move.getRegion()))
 			{
 				player2PlayedGame.add(new MoveResult(move, map.getVisibleMapCopyForPlayer(player2))); //for the game file
-				if(move.getPlayerName().equals(player2.getName()))
+				if(move.getPlayerName().equals(player1.getName()))
 					opponentMovesPlayer1.add(move); //for the opponent_moves output
 			}
 		}
