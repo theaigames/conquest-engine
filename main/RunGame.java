@@ -504,7 +504,7 @@ public class RunGame
 			gzos.write(outBytes, 0, outBytes.length);
 			gzos.close();
 
-			return byteArrayToString(baos.toByteArray());
+			return new String(baos.toByteArray(), "UTF-8");
 		}
 		catch(IOException e) {
 			System.out.println(e);
