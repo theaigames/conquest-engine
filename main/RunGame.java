@@ -535,8 +535,7 @@ public class RunGame
 			// String encodedOut = new String(baos.toByteArray());
 			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			System.out.println("Created: " + new String(baos.toByteArray(), "UTF-8"));
-			return "";
+			return new String(baos.toByteArray(), "UTF-8"));
 		}
 		catch(IOException e) {
 			System.out.println(e);
