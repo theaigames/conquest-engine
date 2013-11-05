@@ -500,14 +500,14 @@ public class RunGame
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			GZIPOutputStream gzos = new GZIPOutputStream(baos);
 
-			byte[] outBytes = out.getBytes();
+			byte[] outBytes = out.getBytes("UTF-8");
 			gzos.write(outBytes, 0, outBytes.length);
 			gzos.close();
 
-			String encodedOut = new String(baos.toByteArray());
-			encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
+			// String encodedOut = new String(baos.toByteArray());
+			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			return new String(encodedOut);
+			return new String(baos.toByteArray(), "UTF-8");
 		}
 		catch(IOException e) {
 			System.out.println(e);
