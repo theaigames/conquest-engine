@@ -541,7 +541,7 @@ public class RunGame
 			getPlayedGame(winner, "fullGame") +
 			getPlayedGame(winner, "player1") +
 			getPlayedGame(winner, "player2")
-		)
+		);
 
 		System.out.println("Found 0 chars: " + StringUtils.countMatches(test, "\0"));
 		
