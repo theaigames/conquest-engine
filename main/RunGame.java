@@ -469,12 +469,12 @@ public class RunGame
 				if(moveResult.getMove() != null)
 				{
 					try {
-						PlaceArmiesMove plMove = (PlaceArmiesMove) moveResult.getMove();
-						out.append(plMove.getString() + "\n");
+						PlaceArmiesMove plm = (PlaceArmiesMove) moveResult.getMove();
+						out.append(plm.getString() + "\n");
 					}
 					catch(Exception e) {
-						AttackTransferMove atMove = (AttackTransferMove) moveResult.getMove();
-						out.append(atMove.getString() + "\n");
+						AttackTransferMove atm = (AttackTransferMove) moveResult.getMove();
+						out.append(atm.getString() + "\n");
 					}
 				out.append("map " + moveResult.getMap().getMapString() + "\n");
 				}
@@ -505,7 +505,7 @@ public class RunGame
 			gzos.close();
 
 			// System.out.println(new String(baos.toByteArray(), "UTF-8");
-			return new String(baos.toByteArray(), "UTF-8");
+			return new String(baos.toByteArray());
 		}
 		catch(IOException e) {
 			System.out.println(e);
@@ -534,11 +534,7 @@ public class RunGame
 		if(winner != null) {
 			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
-		System.out.println(compressGZip(
-						getPlayedGame(winner, "fullGame") +
-						getPlayedGame(winner, "player1") +
-						getPlayedGame(winner, "player2")
-						));
+		
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerId)
@@ -549,11 +545,11 @@ public class RunGame
 				// 	.append("player2", getPlayedGame(winner, "player2"))
 				// )
 				.append("visualization",
-					//compressGZip( //compress visualisation
+					compressGZip( //compress visualisation
 						getPlayedGame(winner, "fullGame") +
 						getPlayedGame(winner, "player1") +
 						getPlayedGame(winner, "player2")
-					//)
+					)
 				)
 				// .append("output", new BasicDBObject()
 				// 	.append(bot1Id, bot1.getStdout())
