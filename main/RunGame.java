@@ -505,27 +505,15 @@ public class RunGame
 			gzos.write(outBytes, 0, outBytes.length);
 			gzos.close();
 
+			String encodedOut = baos.toByteArray();
+			encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			// System.out.println(new String(baos.toByteArray(), "UTF-8");
-			return new String(baos.toByteArray());
+			return new String(encodedOut);
 		}
 		catch(IOException e) {
 			System.out.println(e);
 			return "";
 		}
-	}
-
-	public int countOccurrences(String haystack, char needle)
-	{
-	    int count = 0;
-	    for (int i=0; i < haystack.length(); i++)
-	    {
-	        if (haystack.charAt(i) == needle)
-	        {
-	             count++;
-	        }
-	    }
-	    return count;
 	}
 
 	/*
@@ -549,14 +537,6 @@ public class RunGame
 		if(winner != null) {
 			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
-
-		String test = compressGZip( //compress visualisation
-			getPlayedGame(winner, "fullGame") +
-			getPlayedGame(winner, "player1") +
-			getPlayedGame(winner, "player2")
-		);
-
-		System.out.println("Found 0 chars: " + countOccurrences(test, '\0'));
 		
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
