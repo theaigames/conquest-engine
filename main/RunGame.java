@@ -537,7 +537,7 @@ public class RunGame
 		}
 
 		//create game directory
-		String dir = "/home/jim/development/the-ai-games-website/public/games/" + gameId;
+		String dir = "/var/www/theaigames/public/games/" + gameId;
 		new File(dir).mkdir();
 
 		DBObject updateDoc = new BasicDBObject()
