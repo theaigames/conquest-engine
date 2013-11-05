@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import java.lang.InterruptedException;
 import java.lang.Thread;
 import java.util.zip.*;
-import java.lang.Object;
 
 import move.AttackTransferMove;
 import move.MoveResult;
@@ -515,6 +514,19 @@ public class RunGame
 		}
 	}
 
+	public int countOccurrences(String haystack, char needle)
+	{
+	    int count = 0;
+	    for (int i=0; i < haystack.length(); i++)
+	    {
+	        if (haystack.charAt(i) == needle)
+	        {
+	             count++;
+	        }
+	    }
+	    return count;
+	}
+
 	/*
 	 * MongoDB connection functions
 	 */
@@ -543,7 +555,7 @@ public class RunGame
 			getPlayedGame(winner, "player2")
 		);
 
-		System.out.println("Found 0 chars: " + StringUtils.countMatches(test, "\0"));
+		System.out.println("Found 0 chars: " + countOccurrences(test, "\0"));
 		
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
