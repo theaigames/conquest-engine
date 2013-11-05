@@ -494,7 +494,7 @@ public class RunGame
 		return out.toString();
 	}
 
-	private String compressGZip(String data, String outFile)
+	private void compressGZip(String data, String outFile)
 	{
 		try {
 			FileOutputStream fos = new FileOutputStream(outfile);
@@ -502,16 +502,17 @@ public class RunGame
 
 			byte[] outBytes = data.getBytes("UTF-8");
 			gzos.write(outBytes, 0, outBytes.length);
+
+			gzos.finish();
 			gzos.close();
 
 			// String encodedOut = new String(baos.toByteArray());
 			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			return new String(baos.toByteArray(), "UTF-8");
+			// return new String(baos.toByteArray(), "UTF-8");
 		}
 		catch(IOException e) {
-			System.data.println(e);
-			return "";
+			System.out.println(e);
 		}
 	}
 
