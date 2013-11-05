@@ -494,20 +494,49 @@ public class RunGame
 		return out.toString();
 	}
 
+	// private String compressGZip(String out)
+	// {
+	// 	try {
+	// 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	// 		GZIPOutputStream gzos = new GZIPOutputStream(baos);
+
+	// 		byte[] outBytes = out.getBytes("UTF-8");
+	// 		gzos.write(outBytes, 0, outBytes.length);
+	// 		gzos.close();
+
+	// 		// String encodedOut = new String(baos.toByteArray());
+	// 		// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
+
+	// 		return new String(baos.toByteArray(), "UTF-8");
+	// 	}
+	// 	catch(IOException e) {
+	// 		System.out.println(e);
+	// 		return "";
+	// 	}
+	// }
+
 	private String compressGZip(String out)
 	{
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			GZIPOutputStream gzos = new GZIPOutputStream(baos);
+			byte[] outBytes = out.getBytes();
+			Deflater def = new Deflater();
+			def.setLevel(Deflater.BEST_COMPRESSION);
+			def.setInput(outBytes);
+			def.finish();
 
-			byte[] outBytes = out.getBytes("UTF-8");
-			gzos.write(outBytes, 0, outBytes.length);
-			gzos.close();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(outBytes.length);
+			byte[] buf = new byte[1024];
+			while(!def.finished()) {
+				int compByte = def.deflate(buf);
+				baos.write(buf, 0, compByte);
+			}
+			baos.close();
 
 			// String encodedOut = new String(baos.toByteArray());
 			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			return new String(baos.toByteArray(), "UTF-8");
+			System.out.println("Created: " + new String(baos.toByteArray(), "UTF-8"));
+			return ""
 		}
 		catch(IOException e) {
 			System.out.println(e);
