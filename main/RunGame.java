@@ -3,14 +3,13 @@ package main;
 import io.IORobot;
 
 import java.awt.Point;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
 import java.lang.InterruptedException;
 import java.lang.Thread;
+import java.util.zip.*;
 
 import move.AttackTransferMove;
 import move.MoveResult;
@@ -382,70 +381,70 @@ public class RunGame
 		return true;
 	}
 	
-	private String writeOutputFile(String gameId, Player winner)
-	{
-		try {
-			//temp
-			String fileString = "/home/jim/development/the-ai-games-website/public/games/gameOutputFile" + gameId + ".txt";
-			FileWriter fileStream = new FileWriter(fileString);
-			BufferedWriter out = new BufferedWriter(fileStream);
+	// private String writeOutputFile(String gameId, Player winner)
+	// {
+	// 	try {
+	// 		//temp
+	// 		String fileString = "/home/jim/development/the-ai-games-website/public/games/gameOutputFile" + gameId + ".txt";
+	// 		FileWriter fileStream = new FileWriter(fileString);
+	// 		BufferedWriter out = new BufferedWriter(fileStream);
 			
-			writePlayedGame(winner, out, "fullGame");
-			writePlayedGame(winner, out, "player1");
-			writePlayedGame(winner, out, "player2");
+	// 		writePlayedGame(winner, out, "fullGame");
+	// 		writePlayedGame(winner, out, "player1");
+	// 		writePlayedGame(winner, out, "player2");
 			
-			out.close();
-			return fileString;
-		}
-		catch(Exception e) {
-			System.err.println("Error on creating output file: " + e.getMessage());
-			return null;
-		}
-	}
+	// 		out.close();
+	// 		return fileString;
+	// 	}
+	// 	catch(Exception e) {
+	// 		System.err.println("Error on creating output file: " + e.getMessage());
+	// 		return null;
+	// 	}
+	// }
 	
-	private void writePlayedGame(Player winner, BufferedWriter out, String gameView) throws IOException
-	{
-		LinkedList<MoveResult> playedGame;
-		if(gameView.equals("player1"))
-			playedGame = player1PlayedGame;
-		else if(gameView.equals("player2"))
-			playedGame = player2PlayedGame;
-		else
-			playedGame = fullPlayedGame;
+	// private void writePlayedGame(Player winner, BufferedWriter out, String gameView) throws IOException
+	// {
+	// 	LinkedList<MoveResult> playedGame;
+	// 	if(gameView.equals("player1"))
+	// 		playedGame = player1PlayedGame;
+	// 	else if(gameView.equals("player2"))
+	// 		playedGame = player2PlayedGame;
+	// 	else
+	// 		playedGame = fullPlayedGame;
 			
-		playedGame.removeLast();
-		int roundNr = 2;
-		out.write("map " + playedGame.getFirst().getMap().getMapString() + "\n");
-		out.write("round 1" + "\n");
-		for(MoveResult moveResult : playedGame)
-		{
-			if(moveResult != null)
-			{
-				if(moveResult.getMove() != null)
-				{
-					try {
-						PlaceArmiesMove plMove = (PlaceArmiesMove) moveResult.getMove();
-						out.write(plMove.getString() + "\n");
-					}
-					catch(Exception e) {
-						AttackTransferMove atMove = (AttackTransferMove) moveResult.getMove();
-						out.write(atMove.getString() + "\n");
-					}
-				out.write("map " + moveResult.getMap().getMapString() + "\n");
-				}
-			}
-			else
-			{
-				out.write("round " + roundNr + "\n");
-				roundNr++;
-			}
-		}
+	// 	playedGame.removeLast();
+	// 	int roundNr = 2;
+	// 	out.write("map " + playedGame.getFirst().getMap().getMapString() + "\n");
+	// 	out.write("round 1" + "\n");
+	// 	for(MoveResult moveResult : playedGame)
+	// 	{
+	// 		if(moveResult != null)
+	// 		{
+	// 			if(moveResult.getMove() != null)
+	// 			{
+	// 				try {
+	// 					PlaceArmiesMove plMove = (PlaceArmiesMove) moveResult.getMove();
+	// 					out.write(plMove.getString() + "\n");
+	// 				}
+	// 				catch(Exception e) {
+	// 					AttackTransferMove atMove = (AttackTransferMove) moveResult.getMove();
+	// 					out.write(atMove.getString() + "\n");
+	// 				}
+	// 			out.write("map " + moveResult.getMap().getMapString() + "\n");
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			out.write("round " + roundNr + "\n");
+	// 			roundNr++;
+	// 		}
+	// 	}
 		
-		if(winner != null)
-			out.write(winner.getName() + " won\n");
-		else
-			out.write("Nobody won\n");
-	}
+	// 	if(winner != null)
+	// 		out.write(winner.getName() + " won\n");
+	// 	else
+	// 		out.write("Nobody won\n");
+	// }
 
 	private String getPlayedGame(Player winner, String gameView)
 	{
@@ -495,6 +494,23 @@ public class RunGame
 		return out.toString();
 	}
 
+	private String compressGZip(String out)
+	{
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			GZIPOutputStream gzos = new GZIPOutputStream(baos);
+
+			byte[] outBytes = out.getBytes();
+			gzos.write(outBytes, 0, outBytes.length);
+			gzos.close();
+
+			return byteArrayToString(baos.toByteArray());
+		}
+		catch(IOException e) {
+			System.out.println(e);
+			return "";
+		}
+	}
 
 	/*
 	 * MongoDB connection functions
@@ -528,9 +544,11 @@ public class RunGame
 				// 	.append("player2", getPlayedGame(winner, "player2"))
 				// )
 				.append("visualization",
-					getPlayedGame(winner, "fullGame") +
-					getPlayedGame(winner, "player1") +
-					getPlayedGame(winner, "player2")
+					compressGZip( //compress
+						getPlayedGame(winner, "fullGame") +
+						getPlayedGame(winner, "player1") +
+						getPlayedGame(winner, "player2")
+					);
 				)
 				.append("output", new BasicDBObject()
 					.append(bot1Id, bot1.getStdout())
@@ -545,8 +563,8 @@ public class RunGame
 					.append(bot2Id, bot2.getStderr())
 				)
 				.append("dump", new BasicDBObject()
-					.append(bot1Id, bot1.getDump())
-					.append(bot2Id, bot2.getDump())
+					.append(bot1Id, compressGZip(bot1.getDump()))
+					.append(bot2Id, compressGZip(bot2.getDump()))
 				)
 			);
 		
