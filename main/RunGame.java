@@ -544,11 +544,11 @@ public class RunGame
 				// 	.append("player2", getPlayedGame(winner, "player2"))
 				// )
 				.append("visualization",
-					compressGZip( //compress
+					compressGZip( //compress visualisation
 						getPlayedGame(winner, "fullGame") +
 						getPlayedGame(winner, "player1") +
 						getPlayedGame(winner, "player2")
-					);
+					)
 				)
 				.append("output", new BasicDBObject()
 					.append(bot1Id, bot1.getStdout())
@@ -563,8 +563,8 @@ public class RunGame
 					.append(bot2Id, bot2.getStderr())
 				)
 				.append("dump", new BasicDBObject()
-					.append(bot1Id, compressGZip(bot1.getDump()))
-					.append(bot2Id, compressGZip(bot2.getDump()))
+					.append(bot1Id, bot1.getDump())
+					.append(bot2Id, bot2.getDump())
 				)
 			);
 		
