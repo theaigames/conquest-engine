@@ -496,7 +496,6 @@ public class RunGame
 
 	private String compressGZip(String out)
 	{
-		System.out.println("number of newlines: " + countOccurrences(out, '\n'));
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			GZIPOutputStream gzos = new GZIPOutputStream(baos);
@@ -505,7 +504,7 @@ public class RunGame
 			gzos.write(outBytes, 0, outBytes.length);
 			gzos.close();
 
-			String encodedOut = baos.toByteArray();
+			String encodedOut = new String(baos.toByteArray());
 			encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
 			return new String(encodedOut);
