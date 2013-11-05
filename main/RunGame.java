@@ -494,51 +494,23 @@ public class RunGame
 		return out.toString();
 	}
 
-	// private String compressGZip(String out)
-	// {
-	// 	try {
-	// 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	// 		GZIPOutputStream gzos = new GZIPOutputStream(baos);
-
-	// 		byte[] outBytes = out.getBytes("UTF-8");
-	// 		gzos.write(outBytes, 0, outBytes.length);
-	// 		gzos.close();
-
-	// 		// String encodedOut = new String(baos.toByteArray());
-	// 		// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
-
-	// 		return new String(baos.toByteArray(), "UTF-8");
-	// 	}
-	// 	catch(IOException e) {
-	// 		System.out.println(e);
-	// 		return "";
-	// 	}
-	// }
-
-	private String compressGZip(String out)
+	private String compressGZip(String data, String outFile)
 	{
 		try {
-			byte[] outBytes = out.getBytes();
-			Deflater def = new Deflater();
-			def.setLevel(Deflater.BEST_COMPRESSION);
-			def.setInput(outBytes);
-			def.finish();
+			FileOutputStream fos = new FileOutputStream(outfile);
+			GZIPOutputStream gzos = new GZIPOutputStream(fos);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(outBytes.length);
-			byte[] buf = new byte[1024];
-			while(!def.finished()) {
-				int compByte = def.deflate(buf);
-				baos.write(buf, 0, compByte);
-			}
-			baos.close();
+			byte[] outBytes = data.getBytes("UTF-8");
+			gzos.write(outBytes, 0, outBytes.length);
+			gzos.close();
 
-			String encodedOut = new String(baos.toByteArray(), "UTF-8");
-			encodedOut = encodedOut.replaceAll("\0", "\n"); //remove \0 chars
+			// String encodedOut = new String(baos.toByteArray());
+			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
 
-			return encodedOut;
+			return new String(baos.toByteArray(), "UTF-8");
 		}
 		catch(IOException e) {
-			System.out.println(e);
+			System.data.println(e);
 			return "";
 		}
 	}
@@ -564,7 +536,15 @@ public class RunGame
 		if(winner != null) {
 			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
-		
+
+		String dir = "/home/jim/development/the-ai-games-website/public/games/" + gameId;
+		new File(dir).mkdir();
+		compressGZip(getPlayedGame(winner, "fullGame") + 
+						getPlayedGame(winner, "player1") + 
+						getPlayedGame(winner, "player2"), 
+						dir + "/visualization");
+
+
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerId)
@@ -574,13 +554,14 @@ public class RunGame
 				// 	.append("player1", getPlayedGame(winner, "player1"))
 				// 	.append("player2", getPlayedGame(winner, "player2"))
 				// )
-				.append("visualization",
-					compressGZip( //compress visualisation
-						getPlayedGame(winner, "fullGame") +
-						getPlayedGame(winner, "player1") +
-						getPlayedGame(winner, "player2")
-					)
-				)
+				// .append("visualization",
+				// 	compressGZip( //compress visualization
+				// 		getPlayedGame(winner, "fullGame") +
+				// 		getPlayedGame(winner, "player1") +
+				// 		getPlayedGame(winner, "player2")
+				// 	)
+				// )
+				.append("visualization", dir + "/visualization")
 				// .append("output", new BasicDBObject()
 				// 	.append(bot1Id, bot1.getStdout())
 				// 	.append(bot2Id, bot2.getStdout())
