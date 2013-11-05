@@ -555,7 +555,7 @@ public class RunGame
 			getPlayedGame(winner, "player2")
 		);
 
-		System.out.println("Found 0 chars: " + countOccurrences(test, "\0"));
+		System.out.println("Found 0 chars: " + countOccurrences(test, '\0'));
 		
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
