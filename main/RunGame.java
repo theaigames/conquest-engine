@@ -494,7 +494,7 @@ public class RunGame
 		return out.toString();
 	}
 
-	private void compressGZip(String data, String outFile)
+	private String compressGZip(String data, String outFile)
 	{
 		try {
 			FileOutputStream fos = new FileOutputStream(outFile);
@@ -506,13 +506,11 @@ public class RunGame
 			gzos.finish();
 			gzos.close();
 
-			// String encodedOut = new String(baos.toByteArray());
-			// encodedOut = encodedOut.replaceAll("\0", ""); //remove \0 chars
-
-			// return new String(baos.toByteArray(), "UTF-8");
+			return outFile;
 		}
 		catch(IOException e) {
 			System.out.println(e);
+			return "";
 		}
 	}
 
@@ -538,13 +536,9 @@ public class RunGame
 			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
 
+		//create game directory
 		String dir = "/home/jim/development/the-ai-games-website/public/games/" + gameId;
 		new File(dir).mkdir();
-		compressGZip(getPlayedGame(winner, "fullGame") + 
-						getPlayedGame(winner, "player1") + 
-						getPlayedGame(winner, "player2"), 
-						dir + "/visualization");
-
 
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
@@ -562,7 +556,14 @@ public class RunGame
 				// 		getPlayedGame(winner, "player2")
 				// 	)
 				// )
-				.append("visualization", dir + "/visualization")
+				.append("visualization", 
+					compressGZip(
+						getPlayedGame(winner, "fullGame") + 
+						getPlayedGame(winner, "player1") + 
+						getPlayedGame(winner, "player2"), 
+						dir + "/visualization"
+					)
+				)
 				// .append("output", new BasicDBObject()
 				// 	.append(bot1Id, bot1.getStdout())
 				// 	.append(bot2Id, bot2.getStdout())
@@ -571,13 +572,21 @@ public class RunGame
 				// 	.append(bot1Id, bot1.getStdin())
 				// 	.append(bot2Id, bot2.getStdin())
 				// )
+				// .append("errors", new BasicDBObject()
+				// 	.append(bot1Id, bot1.getStderr())
+				// 	.append(bot2Id, bot2.getStderr())
+				// )
+				// .append("dump", new BasicDBObject()
+				// 	.append(bot1Id, bot1.getDump())
+				// 	.append(bot2Id, bot2.getDump())
+				// )
 				.append("errors", new BasicDBObject()
-					.append(bot1Id, bot1.getStderr())
-					.append(bot2Id, bot2.getStderr())
+					.append(bot1Id, compressGZip(bot1.getStderr(), dir + "/bot1Errors"))
+					.append(bot2Id, compressGZip(bot2.getStderr(), dir + "/bot2Errors"))
 				)
 				.append("dump", new BasicDBObject()
-					.append(bot1Id, bot1.getDump())
-					.append(bot2Id, bot2.getDump())
+					.append(bot1Id, compressGZip(bot1.getDump(), dir + "/bot1Dump"))
+					.append(bot2Id, compressGZip(bot2.getDump(), dir + "/bot2Dump"))
 				)
 			);
 		
