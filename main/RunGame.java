@@ -497,7 +497,7 @@ public class RunGame
 	private void compressGZip(String data, String outFile)
 	{
 		try {
-			FileOutputStream fos = new FileOutputStream(outfile);
+			FileOutputStream fos = new FileOutputStream(outFile);
 			GZIPOutputStream gzos = new GZIPOutputStream(fos);
 
 			byte[] outBytes = data.getBytes("UTF-8");
