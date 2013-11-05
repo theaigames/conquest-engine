@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import java.lang.InterruptedException;
 import java.lang.Thread;
 import java.util.zip.*;
+import java.lang.Object;
 
 import move.AttackTransferMove;
 import move.MoveResult;
@@ -504,6 +505,7 @@ public class RunGame
 			gzos.write(outBytes, 0, outBytes.length);
 			gzos.close();
 
+
 			// System.out.println(new String(baos.toByteArray(), "UTF-8");
 			return new String(baos.toByteArray());
 		}
@@ -534,6 +536,14 @@ public class RunGame
 		if(winner != null) {
 			winnerId = winner.getName() == playerName1 ? bot1ObjectId : bot2ObjectId;
 		}
+
+		String test = compressGZip( //compress visualisation
+			getPlayedGame(winner, "fullGame") +
+			getPlayedGame(winner, "player1") +
+			getPlayedGame(winner, "player2")
+		)
+
+		System.out.println("Found 0 chars: " + StringUtils.countMatches(test, "\0"));
 		
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
