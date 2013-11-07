@@ -588,6 +588,7 @@ public class RunGame
 					.append(bot1Id, compressGZip(bot1.getDump(), dir + "/bot1Dump"))
 					.append(bot2Id, compressGZip(bot2.getDump(), dir + "/bot2Dump"))
 				)
+				.append("ranked", 0)
 			);
 		
 		coll.findAndModify(queryDoc, updateDoc);
