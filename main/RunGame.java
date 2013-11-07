@@ -521,7 +521,7 @@ public class RunGame
 	public void saveGame(IORobot bot1, IORobot bot2) {
 
 		Player winner = this.engine.winningPlayer();
-		int score = this.engine.getRoundNr();
+		int score = this.engine.getRoundNr() - 1;
 
 		DBCollection coll = db.getCollection("games");
 
