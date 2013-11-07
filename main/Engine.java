@@ -460,11 +460,11 @@ public class Engine {
 			{
 				try {
 					PlaceArmiesMove plm = (PlaceArmiesMove) move;
-					opponentMovesString = opponentMovesString.concat(plm.getString() + ",");
+					opponentMovesString = opponentMovesString.concat(plm.getString() + " ");
 				}
 				catch(Exception e) {
 					AttackTransferMove atm = (AttackTransferMove) move;
-					opponentMovesString = opponentMovesString.concat(atm.getString() + ",");					
+					opponentMovesString = opponentMovesString.concat(atm.getString() + " ");					
 				}
 			}
 		}
