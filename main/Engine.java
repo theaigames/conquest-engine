@@ -280,7 +280,7 @@ public class Engine {
 				{
 					if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
 						move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
-					else if(oldFromRegion.getArmies() > fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
+					else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
 						move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
 
 					if(toRegion.ownedByPlayer(player.getName())) //transfer
