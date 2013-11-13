@@ -81,7 +81,7 @@ public class MoveQueue {
 		}
 	}
 
-	private Move getMove(Boolean conditionForPlayer1)
+	private AttackTransferMove getMove(Boolean conditionForPlayer1)
 	{
 		if(!attackTransferMovesP1.isEmpty() && (conditionForPlayer1 || attackTransferMovesP2.isEmpty())) //get player1's move
 		{
