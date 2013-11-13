@@ -56,13 +56,12 @@ public class MoveQueue {
 	//makes sure that if a player has an illegal move, it is the next legal move is selected.
 	public AttackTransferMove getNextAttackTransferMove(int moveNr, String previousMovePlayer, Boolean previousWasIllegal)
 	{
-		if(!hasNextAttackTransferMove())
+		if(!hasNextAttackTransferMove()) //shouldnt ever happen
 		{
 			System.err.println("No more AttackTransferMoves left in MoveQueue");
 			return null;
 		}
 
-		AttackTransferMove move;
 		if(!previousWasIllegal)
 		{
 			if(moveNr % 2 == 1 || previousMovePlayer.equals("")) //first move of the two
@@ -83,6 +82,7 @@ public class MoveQueue {
 
 	private AttackTransferMove getMove(Boolean conditionForPlayer1)
 	{
+		AttackTransferMove move;
 		if(!attackTransferMovesP1.isEmpty() && (conditionForPlayer1 || attackTransferMovesP2.isEmpty())) //get player1's move
 		{
 			move = attackTransferMovesP1.get(0);

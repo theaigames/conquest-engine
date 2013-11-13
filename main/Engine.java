@@ -271,7 +271,7 @@ public class Engine {
 		String previousMovePlayer = "";
 		while(moveQueue.hasNextAttackTransferMove())
 		{	
-			AttacktransferMove move = moveQueue.getNextAttackTransferMove(moveNr, previousMovePlayer, previousMoveWasIllegal);
+			AttackTransferMove move = moveQueue.getNextAttackTransferMove(moveNr, previousMovePlayer, previousMoveWasIllegal);
 
 			if(move.getIllegalMove().equals("")) //the move is not illegal
 			{
