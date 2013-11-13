@@ -7,20 +7,19 @@ import main.Player;
 public class MoveQueue {
 	
 	public ArrayList<PlaceArmiesMove> placeArmiesMoves;
-	public ArrayList<AttackTransferMove> attackTransferMoves;
+	public ArrayList<AttackTransferMove> attackTransferMovesP1;
+	public ArrayList<AttackTransferMove> attackTransferMovesP2;
 	private Player player1, player2;
-	private int nrOfMovesP1, nrOfMovesP2;
-	public final int ORDER_RANDOM = 1;
-	public final int ORDER_CYCLIC = 2;
+	// public final int ORDER_RANDOM = 1;
+	// public final int ORDER_CYCLIC = 2;
 	
 	public MoveQueue(Player player1, Player player2)
 	{
 		this.placeArmiesMoves = new ArrayList<PlaceArmiesMove>();
-		this.attackTransferMoves = new ArrayList<AttackTransferMove>();
+		this.attackTransferMovesP1 = new ArrayList<AttackTransferMove>();
+		this.attackTransferMovesP2 = new ArrayList<AttackTransferMove>();
 		this.player1 = player1;
 		this.player2 = player2;
-		this.nrOfMovesP1 = 0;
-		this.nrOfMovesP2 = 0;
 	}
 	
 	public void addMove(Move move)
@@ -32,81 +31,118 @@ public class MoveQueue {
 		catch(Exception e) { //add AttackTransferMove
 			AttackTransferMove atm = (AttackTransferMove) move;
 			if(player1.getName().equals(move.getPlayerName()))
-				nrOfMovesP1++;
+				attackTransferMovesP1.add(atm);
 			else if(player2.getName().equals(move.getPlayerName()))
-				nrOfMovesP2++;
-			
-			attackTransferMoves.add(atm);
+				attackTransferMovesP2.add(atm);
 		}
 	}
-	/*
-	public void addPlaceArmiesMove(PlaceArmiesMove move)
-	{
-		placeArmiesMoves.add(move);
-	}
-	
-	public void addAttackTransferMove(AttackTransferMove move)
-	{
-		if(player1.name.equals(move.playerName))
-			nrOfMovesP1++;
-		else if(player2.name.equals(move.playerName))
-			nrOfMovesP2++;
-		
-		attackTransferMoves.add(move);
-	}
-	*/
+
 	public void clear()
 	{
 		placeArmiesMoves.clear();
-		attackTransferMoves.clear();
-		nrOfMovesP1 = 0;
-		nrOfMovesP2 = 0;
+		attackTransferMovesP1.clear();
+		attackTransferMovesP2.clear();
+	}
+
+	public boolean hasNextAttackTransferMove()
+	{
+		if(attackTransferMovesP1.isEmpty() && attackTransferMovesP2.isEmpty())
+			return false;
+		return true;
+	}
+
+	//the player's moves are still in the same order, but here is determined which player moves first.
+	//player to move first each move is chosen random.
+	//makes sure that if a player has an illegal move, it is the next legal move is selected.
+	public AttackTransferMove getNextAttackTransferMove(int moveNr, String previousMovePlayer, Boolean previousWasIllegal)
+	{
+		if(!hasNextAttackTransferMove())
+		{
+			System.err.println("No more AttackTransferMoves left in MoveQueue");
+			return null;
+		}
+
+		AttackTransferMove move;
+		if(!previousWasIllegal)
+		{
+			if(moveNr % 2 == 1 || previousMovePlayer.equals("")) //first move of the two
+			{
+				double rand = Math.random();
+				return getMove(rand < 0.5);
+			}
+			else //it's the other player's turn
+			{
+				return getMove(previousMovePlayer.equals(player2.getName()));
+			}
+		}
+		else //return another move by the same player
+		{
+			return getMove(previousMovePlayer.equals(player1.getName()));
+		}
+	}
+
+	private Move getMove(Boolean conditionForPlayer1)
+	{
+		if(!attackTransferMovesP1.isEmpty() && (conditionForPlayer1 || attackTransferMovesP2.isEmpty()) //get player1's move
+		{
+			move = attackTransferMovesP1.get(0);
+			attackTransferMovesP1.remove(0);
+			return move;
+		}
+		else
+		{
+			move = attackTransferMovesP2.get(0);
+			attackTransferMovesP2.remove(0);
+			return move;
+		}
 	}
 	
 	//the player's moves are still in the same order, but here is determined which player moves first.
 	//if orderingType is ORDER_RANDOM, player to move first each move is chosen random.
 	//if orderingType is ORDER_CYCLIC, every round an other player moves first on every move.
-	public void orderMoves(int roundNr, int orderingType)
-	{
-		if(!attackTransferMoves.isEmpty())
-		{
-			ArrayList<AttackTransferMove> orderedMoves = new ArrayList<AttackTransferMove>();
-			int p = nrOfMovesP1;
-			int i = 0;
+	
+	//not used anymore
+	// public void orderMoves(int roundNr, int orderingType)
+	// {
+	// 	if(!attackTransferMoves.isEmpty())
+	// 	{
+	// 		ArrayList<AttackTransferMove> orderedMoves = new ArrayList<AttackTransferMove>();
+	// 		int p = nrOfMovesP1;
+	// 		int i = 0;
 			
-			while(true)
-			{
-				if(i >= p) //when player2 has more moves than player1
-				{
-					for(int j=i+p; j<attackTransferMoves.size(); j++)
-						orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
-					break;
-				}
-				if(i+p >= p+nrOfMovesP2) //when player1 has more moves than player2
-				{
-					for(int j=i; j<p; j++)
-						orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
-					break;
-				}
+	// 		while(true)
+	// 		{
+	// 			if(i >= p) //when player2 has more moves than player1
+	// 			{
+	// 				for(int j=i+p; j<attackTransferMoves.size(); j++)
+	// 					orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
+	// 				break;
+	// 			}
+	// 			if(i+p >= p+nrOfMovesP2) //when player1 has more moves than player2
+	// 			{
+	// 				for(int j=i; j<p; j++)
+	// 					orderedMoves.add(attackTransferMoves.get(j)); //add remaining moves to queue
+	// 				break;
+	// 			}
 				
-				double rand = Math.random();
-				if((orderingType == ORDER_RANDOM && rand < 0.5) || (orderingType == ORDER_CYCLIC && roundNr%2 == 1))
-				{
-					orderedMoves.add(attackTransferMoves.get(i)); 	//player1's move
-					orderedMoves.add(attackTransferMoves.get(i+p));	//player2's move
-				}
-				else
-				{
-					orderedMoves.add(attackTransferMoves.get(i+p)); //player2's move
-					orderedMoves.add(attackTransferMoves.get(i));	//player1's move
-				}
+	// 			double rand = Math.random();
+	// 			if((orderingType == ORDER_RANDOM && rand < 0.5) || (orderingType == ORDER_CYCLIC && roundNr%2 == 1))
+	// 			{
+	// 				orderedMoves.add(attackTransferMoves.get(i)); 	//player1's move
+	// 				orderedMoves.add(attackTransferMoves.get(i+p));	//player2's move
+	// 			}
+	// 			else
+	// 			{
+	// 				orderedMoves.add(attackTransferMoves.get(i+p)); //player2's move
+	// 				orderedMoves.add(attackTransferMoves.get(i));	//player1's move
+	// 			}
 
-				i++;
-			}
+	// 			i++;
+	// 		}
 			
-			attackTransferMoves = orderedMoves;
-		}
-	}
+	// 		attackTransferMoves = orderedMoves;
+	// 	}
+	// }
 
 
 }

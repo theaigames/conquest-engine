@@ -52,7 +52,6 @@ public class Engine {
 		getMoves(player1.getBot().getAttackTransferMoves(2000), player1);
 		getMoves(player2.getBot().getAttackTransferMoves(2000), player2);
 		
-		moveQueue.orderMoves(roundNr, moveQueue.ORDER_RANDOM); //order random
 		executeAttackTransfer();
 		
 		moveQueue.clear();
@@ -266,9 +265,14 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
 		Map oldMap = map.getMapCopy();
-		
-		for(AttackTransferMove move : moveQueue.attackTransferMoves)
+
+		int moveNr = 1;
+		Boolean previousMoveWasIllegal = false;
+		String previousMovePlayer = "";
+		while(moveQueue.hasNextAttackTransferMove())
 		{	
+			AttacktransferMove move = moveQueue.getNextAttackTransferMove(moveNr, previousMovePlayer, previousMoveWasIllegal);
+
 			if(move.getIllegalMove().equals("")) //the move is not illegal
 			{
 				Region fromRegion = move.getFromRegion();
@@ -299,6 +303,7 @@ public class Engine {
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
 			}
+
 			visibleRegionsPlayer1Map = map.visibleRegionsForPlayer(player1);
 			visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
 			
@@ -320,6 +325,17 @@ public class Engine {
 			
 			visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 			visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
+
+			//set some stuff to know what next move to get
+			if(move.getIllegalMove().equals("")) {
+				previousMoveWasIllegal = false;
+				moveNr++;
+			}
+			else {
+				previousMoveWasIllegal = true;
+			}
+			previousMovePlayer = move.getPlayerName();
+			
 		}
 	}
 	
