@@ -305,7 +305,7 @@ public class Engine {
 							doAttack(move);
 					}
 					else
-						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies")
+						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
 				}
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
