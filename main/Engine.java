@@ -282,23 +282,30 @@ public class Engine {
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
-					if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
-						move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
-					else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
-						move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
-
-					if(toRegion.ownedByPlayer(player.getName())) //transfer
+					if(oldFromRegion.getArmies() > 1) //not all armies have been used yet this round on this region 
 					{
-						if(fromRegion.getArmies() > 1)
+						if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
+							move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
+						else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
+							move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
+
+						oldFromRegion.setArmies(oldFromRegion.getArmies() - move.getArmies()); //update oldFromRegion so new armies cannot be used yet
+
+						if(toRegion.ownedByPlayer(player.getName())) //transfer
 						{
-							fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
-							toRegion.setArmies(toRegion.getArmies() + move.getArmies());
+							if(fromRegion.getArmies() > 1)
+							{
+								fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
+								toRegion.setArmies(toRegion.getArmies() + move.getArmies());
+							}
+							else
+								move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
 						}
-						else
-							move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
+						else //attack
+							doAttack(move);
 					}
-					else //attack
-						doAttack(move);
+					else
+						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies")
 				}
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
