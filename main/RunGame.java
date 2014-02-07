@@ -128,6 +128,7 @@ public class RunGame
 		finish(bot1, bot2);
 	}
 
+	//aanpassen en een QPlayer class maken? met eigen finish
 	private void finish(IORobot bot1, IORobot bot2) throws InterruptedException
 	{
 		bot1.finish();
@@ -139,11 +140,13 @@ public class RunGame
 		Thread.sleep(200);
 
 		// write everything
+		// String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
 		this.saveGame(bot1, bot2);
 
         System.exit(0);
 	}
 
+	//tijdelijk handmatig invoeren
 	private Map makeInitMap()
 	{
 		Map map = new Map();
@@ -480,7 +483,7 @@ public class RunGame
 		}
 
 		//create game directory
-		String dir = ""; //your game directory
+		String dir = "" //your directory
 		new File(dir).mkdir();
 
 		DBObject updateDoc = new BasicDBObject()
