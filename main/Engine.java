@@ -1,3 +1,20 @@
+// Copyright 2014 theaigames.com (developers@theaigames.com)
+
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+
+//        http://www.apache.org/licenses/LICENSE-2.0
+
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//	
+//    For the full copyright and license information, please view the LICENSE
+//    file that was distributed with this source code.
+
 package main;
 
 import java.util.ArrayList;
@@ -96,40 +113,27 @@ public class Engine {
 		//if the bot did not correctly return his starting regions, get some random ones
 		if(p1Regions == null) {
 			p1Regions = new ArrayList<Region>();
-			// p1Regions = getRandomStartingRegions(pickableRegions);
 		}
 		if(p2Regions == null) {
 			p2Regions = new ArrayList<Region>();
-			// p2Regions = getRandomStartingRegions(pickableRegions);
 		}
 
 		p1Regions.addAll(getRandomStartingRegions(pickableRegions));
-		// System.out.println("p1Regions has size: " + p1Regions.size());
 		p2Regions.addAll(getRandomStartingRegions(pickableRegions));
-		// System.out.println("p2Regions has size: " + p2Regions.size());
 		
 		//distribute the starting regions
 		int i1, i2, n;
 		i1 = 0; i2 = 0;
 		n = 0;
-		// System.out.println("p1 regions:");
-		// for (Region r : p1Regions) {
-		// 	System.out.println(r.getId());
-		// }
-		// System.out.println("p2 regions:");
-		// for (Region r : p2Regions) {
-		// 	System.out.println(r.getId());
-		// }
+
 		while(n < nrOfStartingRegions) {
 			Region p1Region = p1Regions.get(i1);
 			Region p2Region = p2Regions.get(i2);
 			
 			if(givenP2Regions.contains(p1Region)) {//preferred region for player1 is not given to player2 already
 				i1++;
-				// n++;
 			} else if(givenP1Regions.contains(p2Region)) { //preferred region for player2 is not given to player1 already
 				i2++;
-				// n++;
 			} else if(p1Region != p2Region) {
 				p1Region.setPlayerName(player1.getName());
 				p2Region.setPlayerName(player2.getName());
@@ -144,8 +148,6 @@ public class Engine {
 					i2++;
 				}
 			}
-
-			// System.out.println("i1: " + i1 + ", i2: " + i2 + ", n: " + n);
 		}
 		
 		fullPlayedGame.add(new MoveResult(null, map.getMapCopy()));
@@ -428,7 +430,6 @@ public class Engine {
 	
 	public void sendAllInfo()
 	{
-		//System.out.println("Round: " + this.roundNr);
 		sendStartingArmiesInfo(player1);
 		sendStartingArmiesInfo(player2);
 		sendUpdateMapInfo(player1);
@@ -463,7 +464,6 @@ public class Engine {
 			
 			updateMapString = updateMapString.concat(" " + id + " " + playerName + " " + armies);
 		}
-		// System.out.println("sending to " + player.getName() + ": " + updateMapString);
 		player.getBot().writeInfo(updateMapString);
 	}
 
@@ -494,7 +494,6 @@ public class Engine {
 		
 		opponentMovesString = opponentMovesString.substring(0, opponentMovesString.length()-1);
 
-		// System.out.println("sending to " + player.getName() + ": " + opponentMovesString);
 		player.getBot().writeInfo(opponentMovesString);
 	}
 	

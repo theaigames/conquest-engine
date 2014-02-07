@@ -1,3 +1,20 @@
+// Copyright 2014 theaigames.com (developers@theaigames.com)
+
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+
+//        http://www.apache.org/licenses/LICENSE-2.0
+
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//	
+//    For the full copyright and license information, please view the LICENSE
+//    file that was distributed with this source code.
+
 package io;
 
 import java.io.IOException;
@@ -24,8 +41,6 @@ public class IORobot implements Robot
 	@Override
 	public void setup(long timeOut)
 	{
-		//test
-		//System.out.println(handler.readLine(timeOut) + " read1");
 	}
 	
 	@Override
@@ -74,7 +89,7 @@ public class IORobot implements Robot
 			{
 				long timeNow = System.currentTimeMillis();
 				long timeElapsed = timeNow - timeStart;
-				line = handler.readLine(timeOut); //timeOut werkt niet in inStream??? daarom timeout hier.
+				line = handler.readLine(timeOut);
 				dump.append(line + "\n");
 				if(timeElapsed >= timeOut)
 					break;
@@ -83,7 +98,7 @@ public class IORobot implements Robot
 				errorCounter++;
 				return "";
 			}
-			if(line.equals("No moves")) //moet algemener
+			if(line.equals("No moves"))
 				return "";
 		}
 		else
@@ -91,7 +106,6 @@ public class IORobot implements Robot
 			dump.append("go " + moveType + " " + timeOut + "\n");
 			dump.append("Maximum number of idle moves returned: skipping move (let bot return 'No moves' instead of nothing)");
 		}
-		// System.out.println("reading " + line);
 		return line;
 	}
 	
@@ -99,14 +113,6 @@ public class IORobot implements Robot
 	public void writeInfo(String info){
 		handler.writeLine(info);
 		dump.append(info + "\n");
-		//System.out.println(info);
-		//System.out.println("readInfo: " + handler.readLine(300));
-		/*String[] test = info.split(" ");
-		if(test[0].equals("update_map"))
-		{
-			System.out.println(handler.getStderr());
-			handler.err.buffer.delete(0, handler.err.buffer.length());
-		}*/
 	}
 
 	public void addToDump(String dumpy){

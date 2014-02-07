@@ -1,3 +1,20 @@
+// Copyright 2014 theaigames.com (developers@theaigames.com)
+
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+
+//        http://www.apache.org/licenses/LICENSE-2.0
+
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+//	
+//    For the full copyright and license information, please view the LICENSE
+//    file that was distributed with this source code.
+
 package main;
 
 import io.IORobot;
@@ -68,14 +85,11 @@ public class RunGame
 		IORobot bot1, bot2;
 		int startingArmies;
 
-		db = new MongoClient("localhost", 27017).getDB("test");
-
-		// authentication
-		// boolean auth = db.authenticate(<username>,<password>);
+		db = null; //database
 		
 		//setup the bots
-		bot1 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer1 " + bot1Dir);
-		bot2 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer2 " + bot2Dir);
+		bot1 = new IORobot(); //your bot
+		bot2 = new IORobot(); //your bot
 
 		startingArmies = 5;
 		player1 = new Player(playerName1, bot1, startingArmies);
@@ -110,14 +124,10 @@ public class RunGame
 		fullPlayedGame = this.engine.getFullPlayedGame();
 		player1PlayedGame = this.engine.getPlayer1PlayedGame();
 		player2PlayedGame = this.engine.getPlayer2PlayedGame();
-		
-		// String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
-		// this.saveGame(engine.winningPlayer().getName(), engine.getRoundNr(), outputFile);
 
 		finish(bot1, bot2);
 	}
 
-	//aanpassen en een QPlayer class maken? met eigen finish
 	private void finish(IORobot bot1, IORobot bot2) throws InterruptedException
 	{
 		bot1.finish();
@@ -129,13 +139,11 @@ public class RunGame
 		Thread.sleep(200);
 
 		// write everything
-		// String outputFile = this.writeOutputFile(this.gameId, this.engine.winningPlayer());
 		this.saveGame(bot1, bot2);
 
         System.exit(0);
 	}
 
-	//tijdelijk handmatig invoeren
 	private Map makeInitMap()
 	{
 		Map map = new Map();
@@ -380,71 +388,6 @@ public class RunGame
 				return false;
 		return true;
 	}
-	
-	// private String writeOutputFile(String gameId, Player winner)
-	// {
-	// 	try {
-	// 		//temp
-	// 		String fileString = "/home/jim/development/the-ai-games-website/public/games/gameOutputFile" + gameId + ".txt";
-	// 		FileWriter fileStream = new FileWriter(fileString);
-	// 		BufferedWriter out = new BufferedWriter(fileStream);
-			
-	// 		writePlayedGame(winner, out, "fullGame");
-	// 		writePlayedGame(winner, out, "player1");
-	// 		writePlayedGame(winner, out, "player2");
-			
-	// 		out.close();
-	// 		return fileString;
-	// 	}
-	// 	catch(Exception e) {
-	// 		System.err.println("Error on creating output file: " + e.getMessage());
-	// 		return null;
-	// 	}
-	// }
-	
-	// private void writePlayedGame(Player winner, BufferedWriter out, String gameView) throws IOException
-	// {
-	// 	LinkedList<MoveResult> playedGame;
-	// 	if(gameView.equals("player1"))
-	// 		playedGame = player1PlayedGame;
-	// 	else if(gameView.equals("player2"))
-	// 		playedGame = player2PlayedGame;
-	// 	else
-	// 		playedGame = fullPlayedGame;
-			
-	// 	playedGame.removeLast();
-	// 	int roundNr = 2;
-	// 	out.write("map " + playedGame.getFirst().getMap().getMapString() + "\n");
-	// 	out.write("round 1" + "\n");
-	// 	for(MoveResult moveResult : playedGame)
-	// 	{
-	// 		if(moveResult != null)
-	// 		{
-	// 			if(moveResult.getMove() != null)
-	// 			{
-	// 				try {
-	// 					PlaceArmiesMove plMove = (PlaceArmiesMove) moveResult.getMove();
-	// 					out.write(plMove.getString() + "\n");
-	// 				}
-	// 				catch(Exception e) {
-	// 					AttackTransferMove atMove = (AttackTransferMove) moveResult.getMove();
-	// 					out.write(atMove.getString() + "\n");
-	// 				}
-	// 			out.write("map " + moveResult.getMap().getMapString() + "\n");
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			out.write("round " + roundNr + "\n");
-	// 			roundNr++;
-	// 		}
-	// 	}
-		
-	// 	if(winner != null)
-	// 		out.write(winner.getName() + " won\n");
-	// 	else
-	// 		out.write("Nobody won\n");
-	// }
 
 	private String getPlayedGame(Player winner, String gameView)
 	{
@@ -537,25 +480,13 @@ public class RunGame
 		}
 
 		//create game directory
-		String dir = "/var/www/theaigames/public/games/" + gameId;
+		String dir = ""; //your game directory
 		new File(dir).mkdir();
 
 		DBObject updateDoc = new BasicDBObject()
 			.append("$set", new BasicDBObject()
 				.append("winner", winnerId)
 				.append("score", score)
-				// .append("visualization", new BasicDBObject()
-				// 	.append("fullGame", getPlayedGame(winner, "fullGame"))
-				// 	.append("player1", getPlayedGame(winner, "player1"))
-				// 	.append("player2", getPlayedGame(winner, "player2"))
-				// )
-				// .append("visualization",
-				// 	compressGZip( //compress visualization
-				// 		getPlayedGame(winner, "fullGame") +
-				// 		getPlayedGame(winner, "player1") +
-				// 		getPlayedGame(winner, "player2")
-				// 	)
-				// )
 				.append("visualization", 
 					compressGZip(
 						getPlayedGame(winner, "fullGame") + 
@@ -564,22 +495,6 @@ public class RunGame
 						dir + "/visualization"
 					)
 				)
-				// .append("output", new BasicDBObject()
-				// 	.append(bot1Id, bot1.getStdout())
-				// 	.append(bot2Id, bot2.getStdout())
-				// )
-				// .append("input", new BasicDBObject()
-				// 	.append(bot1Id, bot1.getStdin())
-				// 	.append(bot2Id, bot2.getStdin())
-				// )
-				// .append("errors", new BasicDBObject()
-				// 	.append(bot1Id, bot1.getStderr())
-				// 	.append(bot2Id, bot2.getStderr())
-				// )
-				// .append("dump", new BasicDBObject()
-				// 	.append(bot1Id, bot1.getDump())
-				// 	.append(bot2Id, bot2.getDump())
-				// )
 				.append("errors", new BasicDBObject()
 					.append(bot1Id, compressGZip(bot1.getStderr(), dir + "/bot1Errors"))
 					.append(bot2Id, compressGZip(bot2.getStderr(), dir + "/bot2Errors"))
@@ -592,7 +507,5 @@ public class RunGame
 			);
 		
 		coll.findAndModify(queryDoc, updateDoc);
-
-		// System.out.print("Game done... winner: " + winner.getName() + ", score: " + score);
 	}
 }
