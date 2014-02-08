@@ -85,11 +85,11 @@ public class RunGame
 		IORobot bot1, bot2;
 		int startingArmies;
 
-		db = null; //database
+		db = new MongoClient("localhost", 27017).getDB("test");
 		
 		//setup the bots
-		bot1 = new IORobot(); //your bot
-		bot2 = new IORobot(); //your bot
+		bot1 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer1 " + bot1Dir);
+		bot2 = new IORobot("/opt/aigames/scripts/run_bot.sh aiplayer2 " + bot2Dir);
 
 		startingArmies = 5;
 		player1 = new Player(playerName1, bot1, startingArmies);
@@ -483,7 +483,7 @@ public class RunGame
 		}
 
 		//create game directory
-		String dir = "" //your directory
+		String dir = "/var/www/theaigames/public/games/" + gameId;
 		new File(dir).mkdir();
 
 		DBObject updateDoc = new BasicDBObject()
