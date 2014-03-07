@@ -266,6 +266,7 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
+		LinkedList<Region> usedRegions = new LinkedList<Region>();
 		Map oldMap = map.getMapCopy();
 
 		int moveNr = 1;
@@ -284,30 +285,39 @@ public class Engine {
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
-					if(oldFromRegion.getArmies() > 1) //not all armies have been used yet this round on this region 
+					if(!usedRegions.contains(fromRegion))
 					{
-						if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
-							move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
-						else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
-							move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
-
-						oldFromRegion.setArmies(oldFromRegion.getArmies() - move.getArmies()); //update oldFromRegion so new armies cannot be used yet
-
-						if(toRegion.ownedByPlayer(player.getName())) //transfer
+						if(oldFromRegion.getArmies() > 1) //not all armies have been used yet this round on this region 
 						{
-							if(fromRegion.getArmies() > 1)
+							if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
+								move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
+							else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
+								move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
+
+							oldFromRegion.setArmies(oldFromRegion.getArmies() - move.getArmies()); //update oldFromRegion so new armies cannot be used yet
+
+							if(toRegion.ownedByPlayer(player.getName())) //transfer
 							{
-								fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
-								toRegion.setArmies(toRegion.getArmies() + move.getArmies());
+								if(fromRegion.getArmies() > 1)
+								{
+									fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
+									toRegion.setArmies(toRegion.getArmies() + move.getArmies());
+									usedRegions.add(fromRegion);
+								}
+								else
+									move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
 							}
-							else
-								move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
+							else //attack
+							{
+								doAttack(move);
+								usedRegions.add(fromRegion);
+							}
 						}
-						else //attack
-							doAttack(move);
+						else
+							move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
 					}
 					else
-						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
+						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already been used");
 				}
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
