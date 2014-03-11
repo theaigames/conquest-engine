@@ -405,7 +405,6 @@ public class Engine {
 				fromRegion.setArmies(fromRegion.getArmies() - attackingArmies);
 				toRegion.setPlayerName(move.getPlayerName());
 				toRegion.setArmies(attackingArmies - attackersDestroyed);
-				return 0;
 			}
 			else //attack fail
 			{
@@ -413,6 +412,7 @@ public class Engine {
 				toRegion.setArmies(toRegion.getArmies() - defendersDestroyed);
 				return defendersDestroyed;
 			}
+			return 0;
 		}
 		else
 			move.setIllegalMove(move.getFromRegion().getId() + " attack " + "only has 1 army");
