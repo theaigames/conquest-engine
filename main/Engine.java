@@ -285,15 +285,16 @@ public class Engine {
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
-					if(!usedRegions.contains(fromRegion))
+					if(!usedRegions.contains(fromRegion)) //regions can only be used once for attacking or transferring
 					{
-						if(oldFromRegion.getArmies() > 1) //not all armies have been used yet this round on this region 
+						if(oldFromRegion.getArmies() > 1) //there are still armies that can be used
 						{
 							if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
 								move.setArmies(oldFromRegion.getArmies() - 1); //move the maximal number.
 							else if(oldFromRegion.getArmies() >= fromRegion.getArmies() && fromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion currently?
 								move.setArmies(fromRegion.getArmies() - 1); //move the maximal number.
 
+							//not needed anymore as regions can only be used once now
 							oldFromRegion.setArmies(oldFromRegion.getArmies() - move.getArmies()); //update oldFromRegion so new armies cannot be used yet
 
 							if(toRegion.ownedByPlayer(player.getName())) //transfer
@@ -309,7 +310,8 @@ public class Engine {
 							}
 							else //attack
 							{
-								doAttack(move);
+								int destroyedArmies = doAttack(move);
+								oldFromRegion.setArmies(oldFromRegion.getArmies() - destroyedArmies); //armies that are destroyed and replaced in the same turn cannot be used to attack/transfer with
 								usedRegions.add(fromRegion);
 							}
 						}
@@ -359,7 +361,7 @@ public class Engine {
 	}
 	
 	//see wiki.warlight.net/index.php/Combat_Basics
-	private void doAttack(AttackTransferMove move)
+	private int doAttack(AttackTransferMove move)
 	{
 		Region fromRegion = move.getFromRegion();
 		Region toRegion = move.getToRegion();
@@ -403,11 +405,13 @@ public class Engine {
 				fromRegion.setArmies(fromRegion.getArmies() - attackingArmies);
 				toRegion.setPlayerName(move.getPlayerName());
 				toRegion.setArmies(attackingArmies - attackersDestroyed);
+				return 0;
 			}
 			else //attack fail
 			{
 				fromRegion.setArmies(fromRegion.getArmies() - attackersDestroyed);
 				toRegion.setArmies(toRegion.getArmies() - defendersDestroyed);
+				return defendersDestroyed;
 			}
 		}
 		else
@@ -424,7 +428,7 @@ public class Engine {
 			return null;
 	}
 	
-	//calculate how many armies each player is able to place on the map for the next.
+	//calculate how many armies each player is able to place on the map for the next round
 	public void recalculateStartingArmies()
 	{
 		player1.setArmiesLeft(player1.getArmiesPerTurn());
