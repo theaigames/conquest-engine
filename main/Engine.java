@@ -412,10 +412,12 @@ public class Engine {
 				toRegion.setArmies(toRegion.getArmies() - defendersDestroyed);
 				return defendersDestroyed;
 			}
-			return 0;
+			
 		}
 		else
 			move.setIllegalMove(move.getFromRegion().getId() + " attack " + "only has 1 army");
+
+		return 0;
 	}
 	
 	public Player winningPlayer()
