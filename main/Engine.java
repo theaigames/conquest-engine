@@ -288,7 +288,7 @@ public class Engine {
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
-					if(!usedRegion.get(fromRegion.getId()).contains(toRegion.getId())) //between two regions there can only be attacked/transfered once
+					if(!usedRegions.get(fromRegion.getId()).contains(toRegion.getId())) //between two regions there can only be attacked/transfered once
 					{
 						if(oldFromRegion.getArmies() > 1) //there are still armies that can be used
 						{
