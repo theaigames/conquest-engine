@@ -266,7 +266,7 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer2Map = map.visibleRegionsForPlayer(player2);
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
-		LinkedList<Region> usedRegions = new LinkedList<Region>();
+		// LinkedList<Region> usedRegions = new LinkedList<Region>();
 		Map oldMap = map.getMapCopy();
 
 		int moveNr = 1;
@@ -285,8 +285,8 @@ public class Engine {
 				
 				if(fromRegion.ownedByPlayer(player.getName())) //check if the fromRegion still belongs to this player
 				{
-					if(!usedRegions.contains(fromRegion)) //regions can only be used once for attacking or transferring
-					{
+					// if(!usedRegions.contains(fromRegion)) //regions can only be used once for attacking or transferring
+					// {
 						if(oldFromRegion.getArmies() > 1) //there are still armies that can be used
 						{
 							if(oldFromRegion.getArmies() < fromRegion.getArmies() && oldFromRegion.getArmies() - 1 < move.getArmies()) //not enough armies on fromRegion at the start of the round?
@@ -303,7 +303,7 @@ public class Engine {
 								{
 									fromRegion.setArmies(fromRegion.getArmies() - move.getArmies());
 									toRegion.setArmies(toRegion.getArmies() + move.getArmies());
-									usedRegions.add(fromRegion);
+									// usedRegions.add(fromRegion);
 								}
 								else
 									move.setIllegalMove(move.getFromRegion().getId() + " transfer " + "only has 1 army");
@@ -312,14 +312,14 @@ public class Engine {
 							{
 								int destroyedArmies = doAttack(move);
 								oldFromRegion.setArmies(oldFromRegion.getArmies() - destroyedArmies); //armies that are destroyed and replaced in the same turn cannot be used to attack/transfer with
-								usedRegions.add(fromRegion);
+								// usedRegions.add(fromRegion);
 							}
 						}
 						else
 							move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
 					}
-					else
-						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already been used");
+					// else
+					// 	move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already been used");
 				}
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
