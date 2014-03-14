@@ -322,7 +322,7 @@ public class Engine {
 							move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
 					}
 					else
-						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already been used");
+						move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already attacked/transfered to this region");
 				}
 				else
 					move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "was taken this round");
