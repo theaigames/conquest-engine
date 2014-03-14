@@ -267,8 +267,8 @@ public class Engine {
 		LinkedList<Region> visibleRegionsPlayer1OldMap = visibleRegionsPlayer1Map;
 		LinkedList<Region> visibleRegionsPlayer2OldMap = visibleRegionsPlayer2Map;
 		ArrayList<ArrayList<Integer>> usedRegions = new ArrayList<ArrayList<Integer>>();
-		for(int i = 1; i<=42; i++) {
-			usedRegions.add(i, new ArrayList<Integer>());
+		for(int i = 0; i<=42; i++) {
+			usedRegions.add(new ArrayList<Integer>());
 		}
 		Map oldMap = map.getMapCopy();
 
