@@ -317,7 +317,7 @@ public class Engine {
 						}
 						else
 							move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has used all available armies");
-					}
+					// }
 					// else
 					// 	move.setIllegalMove(move.getFromRegion().getId() + " attack/transfer " + "has already been used");
 				}
