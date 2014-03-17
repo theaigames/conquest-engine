@@ -195,15 +195,22 @@ public class Engine {
 		//check legality
 		if(region.ownedByPlayer(player.getName()))
 		{
-			if(armies > player.getArmiesLeft()) //player wants to place more armies than he has left
-				plm.setArmies(player.getArmiesLeft()); //place all armies he has left
-			if(player.getArmiesLeft() <= 0)
-				plm.setIllegalMove(" place-armies " + "no armies left to place");
-			
-			player.setArmiesLeft(player.getArmiesLeft() - plm.getArmies());
+			if(armies < 1)
+			{
+				plm.setIllegalMove(" place-armies " + "cannot place less than 1 army");
+			}
+			else
+			{
+				if(armies > player.getArmiesLeft()) //player wants to place more armies than he has left
+					plm.setArmies(player.getArmiesLeft()); //place all armies he has left
+				if(player.getArmiesLeft() <= 0)
+					plm.setIllegalMove(" place-armies " + "no armies left to place");
+				
+				player.setArmiesLeft(player.getArmiesLeft() - plm.getArmies());
+			}
 		}
 		else
-			plm.setIllegalMove(plm.getRegion().getId() + " place_armies " + " not owned");
+			plm.setIllegalMove(plm.getRegion().getId() + " place-armies " + " not owned");
 
 		moveQueue.addMove(plm);
 	}
@@ -224,7 +231,7 @@ public class Engine {
 			if(fromRegion.isNeighbor(toRegion))
 			{
 				if(armies < 1)
-					atm.setIllegalMove(atm.getFromRegion().getId() + " attack/transfer " + "has less than 1 army");
+					atm.setIllegalMove(" attack/transfer " + "cannot use less than 1 army");
 			}
 			else
 				atm.setIllegalMove(atm.getToRegion().getId() + " attack/transfer " + "not a neighbor");
