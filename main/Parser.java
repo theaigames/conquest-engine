@@ -45,6 +45,10 @@ public class Parser {
 			
 			for(int i=0; i<split.length; i++)
 			{
+				if(i > 50){
+					player.getBot().addToDump("Maximum number of moves reached, max 50 moves are allowed");
+					break;
+				}
 				Move move = parseMove(split[i], player);
 				if(move != null)
 					moves.add(move);
